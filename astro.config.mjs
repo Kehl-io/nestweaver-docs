@@ -9,7 +9,7 @@ export default defineConfig({
   },
   integrations: [
     starlight({
-      title: 'NestWeaver',
+      title: 'NestWeaver Docs',
       logo: {
         light: './src/assets/logo-horizontal-light.svg',
         dark: './src/assets/logo-horizontal-dark.svg',
@@ -25,6 +25,20 @@ export default defineConfig({
             type: 'image/svg+xml',
           },
         },
+        {
+          tag: 'meta',
+          attrs: {
+            property: 'og:image',
+            content: 'https://docs.nestweaver.kehl.io/og.png',
+          },
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            name: 'twitter:image',
+            content: 'https://docs.nestweaver.kehl.io/og.png',
+          },
+        },
       ],
       customCss: [
         '@fontsource-variable/inter',
@@ -33,6 +47,8 @@ export default defineConfig({
         './src/styles/custom.css',
       ],
       components: {
+        Head: './src/components/Head.astro',
+        SiteTitle: './src/components/SiteTitle.astro',
         SocialIcons: './src/components/SocialIcons.astro',
       },
       sidebar: [

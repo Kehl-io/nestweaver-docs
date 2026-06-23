@@ -1,0 +1,55 @@
+---
+import StarlightHead from '@astrojs/starlight/components/Head.astro';
+
+const { entry } = Astro.locals.starlightRoute;
+const path = Astro.url.pathname;
+const site = Astro.site?.origin || 'https://docs.nestweaver.kehl.io';
+
+const segments = path.split('/').filter(Boolean);
+
+const sectionLabels: Record<string, string> = {
+  'getting-started': 'Getting Started',
+  concepts: 'Core Concepts',
+  cli: 'CLI Reference',
+  'mcp-tools': 'MCP Tools',
+  configuration: 'Configuration',
+  guides: 'Guides',
+};
+
+const breadcrumbs = [
+  { name: 'Home', url: `${site}/` },
+];
+
+if (segments.length > 0) {
+  const section = segments[0];
+  if (section && sectionLabels[section]) {
+    breadcrumbs.push({
+      name: sectionLabels[section],
+      url: `${site}/${section}/`,
+    });
+  }
+}
+
+if (segments.length > 1) {
+  breadcrumbs.push({
+    name: entry.data.title,
+    url: `${site}${path}`,
+  });
+}
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: breadcrumbs.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.name,
+    item: item.url,
+  })),
+};
+---
+
+<StarlightHead />
+{path !== '/' && (
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+)}
