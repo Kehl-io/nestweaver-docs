@@ -1,0 +1,45 @@
+@import 'tailwindcss/utilities';
+
+:root {
+  --sl-font: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --sl-font-system: var(--sl-font);
+  --sl-font-mono: 'JetBrains Mono Variable', ui-monospace, 'Courier New', monospace;
+}
+
+:root[data-theme='light'] {
+  --sl-color-accent-low: #e8f7ff;
+  --sl-color-accent: #0862a7;
+  --sl-color-accent-high: #04406d;
+
+  --sl-color-white: #1a1a1e;
+  --sl-color-gray-1: #2d2d33;
+  --sl-color-gray-2: #4b5563;
+  --sl-color-gray-3: #6b7c93;
+  --sl-color-gray-4: #9ca3af;
+  --sl-color-gray-5: #e2e8f0;
+  --sl-color-gray-6: #f1f5f9;
+  --sl-color-gray-7: #f8fafc;
+  --sl-color-black: #ffffff;
+
+  --sl-color-text-accent: var(--sl-color-accent);
+}
+
+:root[data-theme='dark'] {
+  --sl-color-accent-low: #0a1e33;
+  --sl-color-accent: #5ed0fe;
+  --sl-color-accent-high: #c8edff;
+
+  --sl-color-white: #f0f4f8;
+  --sl-color-gray-1: #e2e8f0;
+  --sl-color-gray-2: #b0bec5;
+  --sl-color-gray-3: #78909c;
+  --sl-color-gray-4: #546e7a;
+  --sl-color-gray-5: #1a2332;
+  --sl-color-gray-6: #111827;
+  --sl-color-black: #080c14;
+}
+
+:is(h1, h2, h3, h4, h5, h6) {
+  font-family: 'Michroma', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+}
