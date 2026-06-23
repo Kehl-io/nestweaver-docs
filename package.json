@@ -2,6 +2,12 @@
   "name": "nestweaver-docs",
   "version": "0.0.1",
   "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kehl-io/nestweaver-docs.git"
+  },
+  "homepage": "https://docs.nestweaver.kehl.io",
   "type": "module",
   "engines": {
     "node": ">=24"
