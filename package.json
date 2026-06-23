@@ -1,0 +1,40 @@
+{
+  "name": "nestweaver-docs",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "lint": "eslint . && prettier --check .",
+    "lint:fix": "eslint --fix . && prettier --write .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^5.18.0",
+    "@astrojs/starlight": "^0.32.0",
+    "sharp": "^0.34.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.0",
+    "tailwindcss": "^4.2.0",
+    "@tailwindcss/vite": "^4.2.0",
+    "typescript": "^5.9.0",
+    "@fontsource-variable/inter": "^5.2.0",
+    "@fontsource/michroma": "^5.2.0",
+    "@fontsource-variable/jetbrains-mono": "^5.2.0",
+    "eslint": "^9.39.0",
+    "@eslint/js": "^9.39.0",
+    "typescript-eslint": "^8.58.0",
+    "eslint-plugin-astro": "^1.7.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.8.0",
+    "prettier-plugin-astro": "^0.14.0"
+  }
+}
