@@ -15,8 +15,10 @@ Languages with a `_types.scm` query file get full type-aware resolution (annotat
 
 | Language      | Symbol Extraction | Cross-File Resolution | Type-Aware Resolution |
 | ------------- | :---------------: | :-------------------: | :-------------------: |
+| Astro         |         ✓         |           ✓           |           —           |
 | Bash          |         ✓         |           ✓           |           —           |
 | C             |         ✓         |           ✓           |           ✓           |
+| COBOL         |         ✓         |           ✓           |           —           |
 | C++           |         ✓         |           ✓           |           ✓           |
 | C#            |         ✓         |           ✓           |           ✓           |
 | Dart          |         ✓         |           ✓           |           ✓           |
