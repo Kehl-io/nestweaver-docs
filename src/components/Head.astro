@@ -16,9 +16,7 @@ const sectionLabels: Record<string, string> = {
   guides: 'Guides',
 };
 
-const breadcrumbs = [
-  { name: 'Home', url: `${site}/` },
-];
+const breadcrumbs = [{ name: 'Home', url: `${site}/` }];
 
 if (segments.length > 0) {
   const section = segments[0];
@@ -50,6 +48,4 @@ const breadcrumbSchema = {
 ---
 
 <StarlightHead />
-{path !== '/' && (
-  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
-)}
+{path !== '/' && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />}
