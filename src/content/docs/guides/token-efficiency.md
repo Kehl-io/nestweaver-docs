@@ -17,10 +17,10 @@ NestWeaver gives your agent precomputed answers instead of raw files. But even w
 
 NestWeaver offers two query interfaces. They return the same data, but their token costs differ significantly.
 
-| Interface | When to use | Token overhead |
-|-----------|------------|----------------|
-| **MCP tools** | Main conversation loop, interactive work | ~18K tokens for tool schemas (loaded once per session) |
-| **CLI via Bash** | Subagents, batch scripts, hooks | Zero schema overhead — precomputed answers only |
+| Interface        | When to use                              | Token overhead                                         |
+| ---------------- | ---------------------------------------- | ------------------------------------------------------ |
+| **MCP tools**    | Main conversation loop, interactive work | ~18K tokens for tool schemas (loaded once per session) |
+| **CLI via Bash** | Subagents, batch scripts, hooks          | Zero schema overhead — precomputed answers only        |
 
 **Use CLI in subagents for ~40-60% fewer tokens per query.** The CLI returns the same data without loading tool schemas into context. Always pass `--json` for machine-readable output.
 
@@ -36,13 +36,13 @@ nestweaver context "UserService" --token-budget 2000 --json
 
 Every context query accepts filters that narrow results before ranking. Unfiltered queries return broader but less focused results — more tokens for less signal.
 
-| Filter | Effect | Example |
-|--------|--------|---------|
-| `repos` | Limit to specific repositories | `repos: ["my-backend"]` |
-| `tags` | Filter by tag | `tags: ["project/auth"]` |
-| `path_prefix` | Limit to a directory | `path_prefix: "src/services/"` |
-| `kinds` | Symbol, Note, or Section only | `kinds: ["Symbol"]` |
-| `exclude_tags` | Remove unwanted categories | `exclude_tags: ["archived"]` |
+| Filter         | Effect                         | Example                        |
+| -------------- | ------------------------------ | ------------------------------ |
+| `repos`        | Limit to specific repositories | `repos: ["my-backend"]`        |
+| `tags`         | Filter by tag                  | `tags: ["project/auth"]`       |
+| `path_prefix`  | Limit to a directory           | `path_prefix: "src/services/"` |
+| `kinds`        | Symbol, Note, or Section only  | `kinds: ["Symbol"]`            |
+| `exclude_tags` | Remove unwanted categories     | `exclude_tags: ["archived"]`   |
 
 ## Use response_format wisely
 
@@ -70,13 +70,13 @@ nestweaver context "payment processing" --token-budget 8000
 
 ## Choose the right tool
 
-| Need | Tool | Why |
-|------|------|-----|
-| Structural context around a topic | `brain_context` | PPR-ranked, token-budget-aware |
-| Keyword search | `brain_search` | BM25, fast lookup |
-| Read a specific symbol's source | `read_symbols` | Cheapest — returns only the span you need |
-| Project-wide overview | `project_context` | Pre-scoped to a project's subgraph |
-| Check before changing code | `blast_radius` | Shows downstream dependents |
+| Need                              | Tool              | Why                                       |
+| --------------------------------- | ----------------- | ----------------------------------------- |
+| Structural context around a topic | `brain_context`   | PPR-ranked, token-budget-aware            |
+| Keyword search                    | `brain_search`    | BM25, fast lookup                         |
+| Read a specific symbol's source   | `read_symbols`    | Cheapest — returns only the span you need |
+| Project-wide overview             | `project_context` | Pre-scoped to a project's subgraph        |
+| Check before changing code        | `blast_radius`    | Shows downstream dependents               |
 
 ## Summary
 
