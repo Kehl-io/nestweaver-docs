@@ -15,13 +15,13 @@ export default defineConfig({
         dark: './src/assets/logo-horizontal-dark.svg',
         replacesTitle: true,
       },
-      favicon: '/favicon.svg',
+      favicon: '/favicon-light.svg',
       head: [
         {
           tag: 'link',
           attrs: {
             rel: 'icon',
-            href: '/favicon.svg',
+            href: '/favicon-light.svg',
             type: 'image/svg+xml',
           },
         },
