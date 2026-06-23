@@ -2,3 +2,12 @@ node_modules/
 dist/
 .astro/
 .DS_Store
+.env
+.env.*
+*.pem
+*.key
+PLAN.md
+TEST_PLAN.md
+TEST_RESULTS.md
+test-screenshots/
+.playwright-cli/
