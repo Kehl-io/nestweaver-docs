@@ -52,12 +52,12 @@ nestweaver brain status --db ./nestweaver.lbug 2>/dev/null || echo 'NestWeaver: 
 
 The NestWeaver repo includes additional hooks you can install manually from `integrations/claude-code/hooks/`:
 
-| Hook                         | Trigger           | What it does                                                                            |
-| ---------------------------- | ----------------- | --------------------------------------------------------------------------------------- |
-| `pre-read-enrich.sh`         | Read tool         | Searches the graph for symbols in the file being read, shows the top 5 with locations   |
-| `post-edit-impact.sh`        | Write/Edit tool   | Runs `nestweaver impact` on symbols in the edited file, shows top 3 affected dependents |
-| `pre-search-enrich.sh`       | Bash (grep/rg)    | Runs `nestweaver search` alongside grep to show graph results                           |
-| `post-commit-stale-check.sh` | Bash (git commit) | Compares HEAD against the indexed SHA and warns if the index is behind                  |
+| Hook                         | Trigger                 | What it does                                                                                            |
+| ---------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------- |
+| `pre-read-enrich.sh`         | PreToolUse (Read)       | Searches the graph for symbols in the file being read, shows the top 5 with locations                   |
+| `post-edit-impact.sh`        | PreToolUse (Write/Edit) | Runs `nestweaver impact` on symbols about to be edited, shows top 3 affected dependents before the edit |
+| `pre-search-enrich.sh`       | PreToolUse (Bash)       | Runs `nestweaver search` alongside grep to show graph results                                           |
+| `post-commit-stale-check.sh` | PostToolUse (Bash)      | After `git commit`, compares HEAD against the indexed SHA and warns if the index is behind              |
 
 All hooks read from stdin, use `$NESTWEAVER_DB` (default `./nestweaver.lbug`), and exit silently if the database doesn't exist.
 
