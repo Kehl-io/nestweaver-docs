@@ -23,8 +23,8 @@ From each AST, the parser extracts:
 The parser also detects entry points (e.g. `main()`, test files, framework-specific patterns) and framework conventions (React, Next.js, Express, etc.) to enrich the graph with structural metadata.
 
 ```bash
-# Index a repository — auto-detects language from file extensions
-nestweaver index
+# Index the current repository
+nestweaver index --repo .
 ```
 
 ## Resolution

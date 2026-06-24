@@ -77,14 +77,18 @@ Manifest data feeds into dead code detection (identifying entry points) and cros
 
 ## Edge types
 
-NestWeaver tracks four edge types between symbols:
+NestWeaver tracks six edge types between symbols, each with a default weight used by Personalized PageRank:
 
-- **CALLS** — function/method invocations
-- **IMPORTS** — import/require/use statements
-- **USES** — type references, variable access, inheritance
-- **ACCESSES** — field and property access
+| Edge Type              | Weight | Description                                    |
+| ---------------------- | ------ | ---------------------------------------------- |
+| **CALLS**              | 1.0    | Function/method invocations, JSX component use |
+| **EXTENDS/IMPLEMENTS** | 0.9    | Class inheritance, interface implementation    |
+| **IMPORTS**            | 0.7    | Import/require/use statements                  |
+| **USES**               | 0.5    | Type references, variable access               |
+| **ACCESSES**           | 0.4    | Field and property access                      |
+| **MEMBER_OF/INCLUDES** | 0.2    | Module membership, file includes               |
 
-Each edge carries a confidence score. The `--intent` flag on `nestweaver context` adjusts per-edge-type weights to surface the most relevant symbols for your task.
+Each edge also carries a confidence score (0.0–1.0) based on resolution quality. The `--intent` flag on `nestweaver context` adjusts per-edge-type weights to surface the most relevant symbols for your task.
 
 ## Adding language support
 
