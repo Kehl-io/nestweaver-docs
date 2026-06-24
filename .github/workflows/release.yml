@@ -2,28 +2,26 @@ name: Release
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  release-please:
+  release:
+    name: Release Please
     runs-on: ubuntu-latest
-    env:
-      RELEASE_PLEASE_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
     steps:
-      - name: Require release token
-        if: ${{ env.RELEASE_PLEASE_TOKEN == '' }}
+      - name: Validate token
         run: |
-          echo "RELEASE_PLEASE_TOKEN is required to create release PRs."
-          exit 1
+          if [ -z "${{ secrets.RELEASE_PLEASE_TOKEN }}" ]; then
+            echo "RELEASE_PLEASE_TOKEN is not set"
+            exit 1
+          fi
 
       - uses: googleapis/release-please-action@v4
-        id: release
         with:
-          token: ${{ env.RELEASE_PLEASE_TOKEN }}
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           manifest-file: .release-please-manifest.json
           config-file: .release-please-config.json
