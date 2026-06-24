@@ -73,6 +73,10 @@ export default defineConfig({
           autogenerate: { directory: 'configuration' },
         },
         {
+          label: 'Integrations',
+          autogenerate: { directory: 'integrations' },
+        },
+        {
           label: 'Guides',
           autogenerate: { directory: 'guides' },
         },
