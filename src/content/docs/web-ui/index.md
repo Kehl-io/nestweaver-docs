@@ -24,9 +24,11 @@ Everything in the UI is organized around what you're trying to do:
   - `trace flow from <symbol>` — forward call chain
   - `callers of <symbol>` / `callees of <symbol>`
   - `path from <A> to <B>` — shortest path between two symbols
+  - `tests affected by <symbol>` — test selection
   - `notes about <topic>` / `backlinks for <note>`
-  - `hubs in <repo>` / `dead code in <repo>` / `stale repos`
-- **Task lenses** — Overview, Context, Impact, Trace, Repos, Features, and Local neighborhood. The Impact lens renders a layered blast-radius DAG with affected tests and local/org trust states.
+  - `hubs in <repo>` / `bridges in <repo>` / `dead code in <repo>`
+  - `explain <symbol>`, `contract drift`, `stale repos`
+- **Task modes** — six top-level modes, switchable with the keys `1`–`6`: Overview, Context, Impact, Repos, Features, and Local neighborhood. Impact mode renders a layered blast-radius DAG with affected tests and local/org trust states. Search Phrases and node actions activate additional lenses on top (Trace, Path, and more).
 
 ## The tri-panel workspace
 
@@ -38,12 +40,13 @@ Activating a node opens three synced panels:
 
 The three panels cross-highlight, so selecting in one focuses the others.
 
-## Graph, table, or JSON
+## Graph, table, matrix, or JSON
 
-Every result set is inspectable three ways, and the mode is one keypress apart (`⌘L`):
+Every result set is inspectable multiple ways. `⌘L` cycles the three canvas representations — **graph**, **table**, and **matrix** — and a JSON view is a separate toggle:
 
 - **Graph** — the spatial constellation view.
 - **Table** — an accessible, sortable list of the same nodes.
+- **Matrix** — an adjacency matrix of the scene's relationships.
 - **JSON** — the raw payload, including the `_meta` provenance and trust envelope.
 
 This means every graph answer has a non-visual equivalent, which matters for accessibility and for copying results into other tools.
