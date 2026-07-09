@@ -65,6 +65,10 @@ export default defineConfig({
           autogenerate: { directory: 'cli' },
         },
         {
+          label: 'Web UI',
+          autogenerate: { directory: 'web-ui' },
+        },
+        {
           label: 'MCP Tools',
           autogenerate: { directory: 'mcp-tools' },
         },
