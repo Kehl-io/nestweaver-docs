@@ -21,9 +21,12 @@ All three must pass before opening a PR.
 
 ## Pull requests
 
-- PR titles must follow [conventional commits](https://www.conventionalcommits.org/) (enforced by CI).
+- PR titles must follow [conventional commits](https://www.conventionalcommits.org/) (enforced by CI). **The published site is the product**, so pick the type by what ships:
+  - `feat:` — new or expanded site content (a new page, a new section, or docs for a new feature). Triggers a release and a production deploy.
+  - `fix:` — corrections to existing site content. Triggers a patch release and deploy.
+  - `docs:` — this repo's own repo-level docs only (`README.md`, `CONTRIBUTING.md`). Does **not** release or deploy — never use it for `src/content/docs/` pages, or they won't go live.
 - CI runs lint, type-check, and build on all PRs.
-- Releases are automated via release-please.
+- Releases — and the production Cloudflare deploy, which runs on `v*` tags — are automated via release-please, so only `feat:` / `fix:` changes reach the live site.
 
 ## Content contributions
 
