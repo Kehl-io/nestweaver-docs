@@ -43,7 +43,14 @@ sudo mv nestweaver /usr/local/bin/
 
 ## macOS app
 
-Download **NestWeaver.app** from [GitHub Releases](https://github.com/Kehl-io/nestweaver/releases). The `.app` bundle includes a menubar status icon, Metal GPU acceleration for faster embeddings, automatic daemon lifecycle, a web UI on port 9377, and crash recovery.
+Build **NestWeaver.app** from source (it bundles Metal-accelerated embeddings and the web UI):
+
+```bash
+cd app && bash build.sh
+open target/release/NestWeaver.app
+```
+
+The `.app` bundle includes a menubar status icon, Metal GPU acceleration for faster embeddings, automatic daemon lifecycle, a web UI on port 9377, and crash recovery.
 
 ## Verify installation
 
