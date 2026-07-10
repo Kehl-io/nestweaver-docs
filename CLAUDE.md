@@ -42,6 +42,17 @@ Create a `.md` file in the appropriate `src/content/docs/<section>/` directory. 
 
 Sidebar sections are auto-generated from directory structure via `autogenerate` in `astro.config.mjs`. Adding a new page to an existing section only requires creating the file — no config changes needed.
 
+## Commit conventions
+
+This repo **is** the documentation site — the published content under `src/content/docs/` is the product, not repo metadata. The production deploy (`deploy.yml`) fires **only on `v*` tags**, and release-please only cuts a tag for `feat:` / `fix:`. So the commit type decides whether a change actually ships to the live site:
+
+- **`feat:`** — new or expanded site content: a new page, a new section, or documentation for a new NestWeaver feature. Cuts a release → tags → deploys to production. **Use this when documenting a new feature.**
+- **`fix:`** — corrections to existing site content (wrong command, stale info, inaccuracy). Cuts a patch release → deploys.
+- **`docs:`** — reserved for this repo's _own_ repo-level docs (`README.md`, `CONTRIBUTING.md`, this `CLAUDE.md`) — meta about the repo, **not** published site content. Does not release or deploy.
+- **`chore:` / `ci:` / `refactor:` / `style:`** — tooling, config, dependencies. No release.
+
+Do **not** label site content as `docs:`. It looks correct but silently skips the deploy, so the pages never go live. Writing or editing pages under `src/content/docs/` is a `feat:` (new content) or `fix:` (correction) — never `docs:`.
+
 ## Conventions
 
 - "NestWeaver" (capital N, capital W) in prose; `nestweaver` only in code blocks.
