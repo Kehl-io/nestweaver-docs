@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0](https://github.com/Kehl-io/nestweaver-docs/compare/v0.1.0...v0.2.0) (2026-07-10)
+
+
+### Features
+
+* publish Web UI and Server Mode guides ([d71ef0a](https://github.com/Kehl-io/nestweaver-docs/commit/d71ef0ace4301d3d4758d0f503ddd2df7668557f))
+* publish Web UI and Server Mode guides ([50730fb](https://github.com/Kehl-io/nestweaver-docs/commit/50730fb98a82e1c7f5455601b6bb6baff0de7776))
+
 ## [0.1.0](https://github.com/Kehl-io/nestweaver-docs/compare/v0.0.1...v0.1.0) (2026-06-24)
 
 
