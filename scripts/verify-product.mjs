@@ -161,6 +161,11 @@ for (const markdownPath of await markdownFiles('src/content/docs')) {
 const workflow = await readFile('.github/workflows/ci.yml', 'utf8');
 assert.match(
   workflow,
+  /pull_request:\s+branches: \[main, staging\]/,
+  'feature-to-staging pull requests must run the documentation CI gate',
+);
+assert.match(
+  workflow,
   /- name: Product contract\s+run: npm run verify:product/,
   'CI must run the product contract',
 );
