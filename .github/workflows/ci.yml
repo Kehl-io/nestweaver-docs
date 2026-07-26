@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, staging]
   push:
     branches: [main]
 
@@ -32,6 +32,9 @@ jobs:
 
       - name: Type check
         run: npm run type-check
+
+      - name: Product contract
+        run: npm run verify:product
 
       - name: Build
         run: npm run build

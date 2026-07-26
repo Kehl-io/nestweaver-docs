@@ -25,7 +25,15 @@ The daemon follows a hands-off lifecycle — you rarely need to manage it direct
 
 **Idle timeout:** The daemon self-terminates after 1 hour of inactivity (no active connections or in-flight queries). This prevents orphaned daemon processes from consuming resources on machines where NestWeaver isn't actively in use.
 
-**Version mismatch restart:** When a client connects to a running daemon and detects that the daemon binary is an older version than the client, it automatically restarts the daemon with the newer binary. This ensures that `cargo install` or npm updates take effect without manual daemon management.
+**Version mismatch restart:** When a client connects to a running daemon and detects that the daemon binary is an older version than the client, it automatically restarts the daemon with the newer binary. This ensures that a newly installed CLI takes effect without manual daemon management.
+
+**macOS lifecycle:** `daemon start` and client autostart register a launchd agent
+that owns a foreground Aqua-session process. An explicit `daemon run` remains in
+the invoking foreground. Neither path forks or self-daemonizes because that
+would break service-manager process ownership and can invalidate inherited
+process state. Socket availability does not mean embeddings are ready: the
+selected backend must complete a real inference and return a non-empty, finite
+vector before readiness is published.
 
 ```bash
 # Check daemon status
@@ -35,7 +43,7 @@ nestweaver daemon status
 nestweaver daemon stop
 
 # Manually start (rarely needed — auto-start handles this)
-nestweaver daemon start
+nestweaver daemon --db <path> start --config <path>
 ```
 
 ## Communication
@@ -55,7 +63,7 @@ When making multiple NestWeaver queries in a subagent or script, use the CLI (`n
 The daemon is more than a database proxy. It hosts several background subsystems:
 
 - **Filesystem watcher** — monitors indexed repositories for changes and triggers incremental re-indexing with debouncing. Started via `nestweaver watch` or automatically when the daemon launches with watch mode enabled.
-- **Embedding generation** — lazily loads the embedding model (sentence-transformers/all-MiniLM-L6-v2, ~80MB) and generates vector embeddings for symbols, notes, and headings. Metal-accelerated on Apple Silicon (~5x faster than CPU).
+- **Embedding generation** — loads the configured local or external backend, proves full inference before readiness, and generates vector embeddings for symbols, notes, and headings. A Metal-enabled macOS build uses Metal according to the configured device policy.
 - **BM25 index** — maintains the Tantivy full-text search index as a sidecar alongside the database.
 - **Git activity scoring** — computes file-level churn scores and co-change pairs from git history, writing results to sidecar files.
 - **PageRank cache** — loads and maintains cached global PageRank scores.
@@ -82,26 +90,65 @@ In `--no-daemon` mode, the CLI opens the database directly in the current proces
 
 Use `--no-daemon` for CI jobs and scripted analysis where only one process accesses the database at a time.
 
+## Embedding status and troubleshooting
+
+Inspect compile/runtime capability separately from the selected daemon backend:
+
+```bash
+nestweaver diagnostics capabilities --json
+nestweaver daemon --db <path> status
+nestweaver brain status --db <path> --json
+```
+
+Runtime status includes `state`, `backend`, `requested_device`,
+`selected_device`, `model_id`, `error`, `metal_compiled`, and `fallback_used`.
+A local backend is ready only after `selected_device` is `metal` or `cpu` and
+`fallback_used` remains `false`. A ready external backend has an empty
+`selected_device` because it has no local device.
+
+| Observation                                    | Meaning                                                                                                                       | Corrective action                                                                                                                                                                 |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `metal_compiled = false`                       | The binary has no Metal backend. `auto` selects CPU; explicit `metal` fails.                                                  | Install a Metal-enabled macOS release archive or rebuild with `cargo install --locked --path . --features metal`.                                                                 |
+| `selected_device = ""`                         | Expected for an external backend. For a local backend, embedding is still loading or failed.                                  | Check `backend`, `state`, and `error`; do not infer a local device until state is `ready`.                                                                                        |
+| Error names a missing model-cache artifact     | The cache-only daemon could not resolve a required model file.                                                                | Stop the daemon, run `nestweaver embed --db <path> --local --model-id <id> --cache-dir <path>` with the configured values, restart with `--config`, and recheck status.           |
+| External endpoint readiness or request failure | The selected external backend is unavailable. No local model is attempted.                                                    | Restore the endpoint or credentials, or remove `external_endpoint`, replace the stored embeddings with a stopped-daemon direct local `--force` pass, and restart with `--config`. |
+| `"semantic"` appears in `degraded_components`  | Semantic retrieval was requested but no ready model/vector path was available. Graph, PPR, and BM25 results remain available. | Inspect embedding status and populate or repair the model/embeddings. The response reports `semantic_applied = false` until semantic retrieval succeeds.                          |
+
+When intentionally switching from an external backend to a local model, use
+the same model, cache, and config paths throughout:
+
+```bash
+DB=/absolute/path/to/brain.lbug
+CONFIG=/absolute/path/to/nestweaver-instance.toml
+MODEL=sentence-transformers/all-MiniLM-L6-v2
+CACHE="$HOME/.cache/nestweaver/models"
+nestweaver daemon --db "$DB" stop
+# Remove external_endpoint from "$CONFIG" before the forced local pass.
+nestweaver embed --db "$DB" --local --model-id "$MODEL" --cache-dir "$CACHE" --force
+nestweaver daemon --db "$DB" start --config "$CONFIG"
+nestweaver brain status --db "$DB" --json
+```
+
 ## macOS app
 
 On macOS, the recommended way to run NestWeaver is the native `.app` bundle. It provides a menubar-only application (no Dock icon) that manages the daemon lifecycle:
 
 - **Menubar status icon** — quick access to the web UI and daemon status
-- **Metal GPU acceleration** — the app provides GUI session context so the daemon gets full Metal access (~5x faster embeddings: 7ms vs 37ms)
-- **Automatic lifecycle** — starts the daemon on launch, terminates on quit, no orphaned processes
-- **Crash recovery** — auto-restarts the daemon up to 3 times on unexpected crashes
+- **Metal GPU acceleration** — the app installs a non-forking launchd Aqua agent; the daemon reports Metal ready only after a full model inference probe succeeds
+- **Automatic lifecycle** — starts or reuses the shared launchd service; it can persist across app quits and exits normally after its idle timeout
+- **Crash recovery** — launchd restarts the daemon after an unexpected crash
 - **Daemon coexistence** — detects if a daemon is already running (via CLI or launchd) and connects to it instead of starting a second instance
 - **Web UI** at `http://127.0.0.1:9377` — opens automatically on launch
 
 ```bash
 # Build from source
-cd app && bash build.sh
+bash app/build.sh
 open target/release/NestWeaver.app
-
-# Or download from GitHub Releases
 ```
 
-On Linux and headless macOS environments, use `nestweaver daemon start` or let auto-start handle it.
+The `.app` bundle is currently built from source; no `.app` or DMG is published
+in GitHub Releases yet. On Linux and headless macOS environments, use
+`nestweaver daemon start` or let auto-start handle it.
 
 ## Sidecar files
 

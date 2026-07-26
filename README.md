@@ -42,7 +42,7 @@ Outputs to `dist/`.
 ## Check Suite
 
 ```bash
-npm run lint && npm run type-check && npm run build
+npm run lint && npm run type-check && npm run verify:product && npm run build
 ```
 
 ## Content
