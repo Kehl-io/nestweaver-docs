@@ -32,17 +32,18 @@ In GitHub Actions, add a setup step:
 
 ```yaml
 - name: Install NestWeaver
+  env:
+    GH_TOKEN: ${{ github.token }}
   run: |
-    curl -fsSL https://github.com/Kehl-io/nestweaver/releases/latest/download/nestweaver-linux-x86_64.tar.gz \
-      | tar xz -C /usr/local/bin
+    mkdir -p "$RUNNER_TEMP/nestweaver-release"
+    cd "$RUNNER_TEMP/nestweaver-release"
+    gh release download --repo Kehl-io/nestweaver \
+      --pattern 'nestweaver-*-x86_64-unknown-linux-gnu.tar.gz*'
+    ARCHIVE="$(printf '%s\n' nestweaver-*.tar.gz)"
+    sha256sum -c "$ARCHIVE.sha256"
+    tar xzf "$ARCHIVE"
+    sudo install -m 0755 nestweaver /usr/local/bin/nestweaver
     nestweaver --version
-```
-
-You can also install via npm if you prefer:
-
-```yaml
-- name: Install NestWeaver
-  run: npm install -g @kehl-io/nestweaver
 ```
 
 ## Index in CI
@@ -146,9 +147,17 @@ jobs:
           fetch-depth: 0 # Full history needed for pr-impact
 
       - name: Install NestWeaver
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          curl -fsSL https://github.com/Kehl-io/nestweaver/releases/latest/download/nestweaver-linux-x86_64.tar.gz \
-            | tar xz -C /usr/local/bin
+          mkdir -p "$RUNNER_TEMP/nestweaver-release"
+          cd "$RUNNER_TEMP/nestweaver-release"
+          gh release download --repo Kehl-io/nestweaver \
+            --pattern 'nestweaver-*-x86_64-unknown-linux-gnu.tar.gz*'
+          ARCHIVE="$(printf '%s\n' nestweaver-*.tar.gz)"
+          sha256sum -c "$ARCHIVE.sha256"
+          tar xzf "$ARCHIVE"
+          sudo install -m 0755 nestweaver /usr/local/bin/nestweaver
 
       - name: Index repository
         run: nestweaver index . --db ./nestweaver.lbug
