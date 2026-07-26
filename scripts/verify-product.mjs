@@ -169,6 +169,12 @@ assert.match(
   /- name: Product contract\s+run: npm run verify:product/,
   'CI must run the product contract',
 );
+const deployWorkflow = await readFile('.github/workflows/deploy.yml', 'utf8');
+assert.match(
+  deployWorkflow,
+  /pull_request:\s+branches: \[main, staging\]/,
+  'feature-to-staging pull requests must run the documentation preview deployment',
+);
 const repositoryReadme = await readFile('README.md', 'utf8');
 assert.ok(
   repositoryReadme.includes('npm run verify:product'),
