@@ -1,52 +1,51 @@
 ---
 title: Installation
-description: How to install NestWeaver — via npm, Cargo, pre-built binaries, or the macOS app.
+description: Install a verified NestWeaver release, build the CLI from source, or build the macOS app.
 sidebar:
   order: 1
 ---
 
-NestWeaver can be installed several ways depending on your platform and preferences.
+## Pre-built CLI (recommended)
 
-## npm (recommended)
+Download the archive and matching `.sha256` file for your platform from
+[GitHub Releases](https://github.com/Kehl-io/nestweaver/releases/latest):
 
-The quickest way to get started. No Rust toolchain needed.
+- Linux: `x86_64-unknown-linux-gnu` or `aarch64-unknown-linux-gnu`
+- macOS: `x86_64-apple-darwin` or `aarch64-apple-darwin`
 
 ```bash
-npm install -g @kehl-io/nestweaver
-nestweaver --version
-# Expected: nestweaver X.Y.Z
+ARCHIVE=nestweaver-<tag>-<target>.tar.gz
+shasum -a 256 -c "$ARCHIVE.sha256"
+tar xzf "$ARCHIVE"
+sudo install -m 0755 nestweaver /usr/local/bin/nestweaver
 ```
 
-## Cargo
+On Linux, use `sha256sum -c "$ARCHIVE.sha256"` if `shasum` is unavailable.
 
-If you already have Rust 1.85+ installed:
+## Build the CLI from source
+
+Install Rust 1.85 or newer, then build and install the checked-out source:
 
 ```bash
-cargo install nestweaver
-nestweaver --version
-# Expected: nestweaver X.Y.Z
+git clone https://github.com/Kehl-io/nestweaver.git
+cd nestweaver
+cargo install --locked --path .
 ```
 
-## Pre-built binaries
-
-Download a pre-built binary for your platform from [GitHub Releases](https://github.com/Kehl-io/nestweaver/releases/latest). Binaries are available for:
-
-- **Linux** — x86_64 and aarch64
-- **macOS** — x86_64 and aarch64
-
-Extract and install:
+To compile the local Metal backend on macOS:
 
 ```bash
-tar xzf nestweaver-*.tar.gz
-sudo mv nestweaver /usr/local/bin/
+cargo install --locked --path . --features metal
 ```
 
 ## macOS app
 
-Build **NestWeaver.app** from source (it bundles Metal-accelerated embeddings and the web UI):
+The native app is currently source-only; GitHub Releases do not publish an
+`.app` bundle or DMG. From the repository root, build **NestWeaver.app** with
+the bundled CLI, Metal embeddings, and web UI:
 
 ```bash
-cd app && bash build.sh
+bash app/build.sh
 open target/release/NestWeaver.app
 ```
 
@@ -61,7 +60,8 @@ nestweaver --version
 # Expected: nestweaver X.Y.Z
 ```
 
-Run `nestweaver --help` to see the full command list. All commands support `--json` for machine-readable output.
+Run `nestweaver --help` to see the full command list and each subcommand's
+available output options.
 
 ## Next steps
 

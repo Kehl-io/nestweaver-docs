@@ -25,11 +25,11 @@ The budget controls the output size, not the computation. NestWeaver still ranks
 
 Ranking is not based on a single metric. NestWeaver fuses three independent retrieval signals via **convex combination** to produce a final relevance score for each symbol:
 
-| Signal                    | Default weight | What it captures                                                                                                                                        |
-| ------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Personalized PageRank** | 0.40           | Structural importance relative to the query seeds — follows call chains, imports, and type relationships through the graph                              |
-| **BM25**                  | 0.25           | Text match — keyword relevance using the Tantivy full-text index with pseudo-relevance feedback expansion                                               |
-| **Semantic similarity**   | 0.35           | Embedding-based similarity — natural language queries matched against symbol and note embeddings (local BERT model, Metal-accelerated on Apple Silicon) |
+| Signal                    | Default weight | What it captures                                                                                                           |
+| ------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **Personalized PageRank** | 0.40           | Structural importance relative to the query seeds — follows call chains, imports, and type relationships through the graph |
+| **BM25**                  | 0.25           | Text match — keyword relevance using the Tantivy full-text index with pseudo-relevance feedback expansion                  |
+| **Semantic similarity**   | 0.35           | Embedding-based similarity when the configured local or external backend is ready                                          |
 
 The combined score for each symbol is:
 
@@ -45,6 +45,21 @@ weight_ppr = 0.40
 weight_bm25 = 0.25
 weight_semantic = 0.35
 ```
+
+Semantic retrieval is an observable component, not an invisible device or
+backend fallback. Context responses include:
+
+- `semantic_applied`: `true` only when query embedding and vector search both
+  completed.
+- `degraded_components`: includes `"semantic"` when the semantic leg was
+  requested but unavailable because the model was loading/failed, inference
+  failed, or the database has no embeddings.
+
+When semantic retrieval degrades, NestWeaver still returns graph, Personalized
+PageRank, and BM25 results. The degraded response is not persisted in the
+response cache, so a later request can use semantic retrieval as soon as the
+backend becomes ready. Set `weight_semantic = 0.0` when semantic retrieval is
+intentionally disabled; that is not reported as degradation.
 
 :::tip[Token efficiency]
 The three-signal fusion means you can query with natural language ("how does authentication work") and get structurally relevant results, not just keyword matches. This is especially useful when you don't know the exact symbol name.
