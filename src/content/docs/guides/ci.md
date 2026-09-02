@@ -42,7 +42,7 @@ You can also install via npm if you prefer:
 
 ```yaml
 - name: Install NestWeaver
-  run: npm install -g @kehl-io/nestweaver
+  run: npm install --global nestweaver
 ```
 
 ## Index in CI

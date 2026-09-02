@@ -12,7 +12,7 @@ NestWeaver can be installed several ways depending on your platform and preferen
 The quickest way to get started. No Rust toolchain needed.
 
 ```bash
-npm install -g @kehl-io/nestweaver
+npm install --global nestweaver
 nestweaver --version
 # Expected: nestweaver X.Y.Z
 ```
