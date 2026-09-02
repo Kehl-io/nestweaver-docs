@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.1](https://github.com/Kehl-io/nestweaver-docs/compare/v0.2.0...v0.2.1) (2026-09-02)
+
+
+### Bug Fixes
+
+* the recommended install command 404s ([0ed5b05](https://github.com/Kehl-io/nestweaver-docs/commit/0ed5b057429fb900e0d6795321424a524e32bf8c))
+* the recommended install command 404s ([0ee2611](https://github.com/Kehl-io/nestweaver-docs/commit/0ee2611d1641a0dfdc7814586fb314a2c282d619))
+
 ## [0.2.0](https://github.com/Kehl-io/nestweaver-docs/compare/v0.1.0...v0.2.0) (2026-07-10)
 
 
