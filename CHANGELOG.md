@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/Kehl-io/nestweaver-docs/compare/v0.4.0...v0.5.0) (2026-10-08)
+
+
+### Features
+
+* add diagrams that follow the docs visual system ([#16](https://github.com/Kehl-io/nestweaver-docs/issues/16)) ([9c47bf9](https://github.com/Kehl-io/nestweaver-docs/commit/9c47bf9917d1f2777e5a5efe45794c93f691120e))
+
 ## [0.4.0](https://github.com/Kehl-io/nestweaver-docs/compare/v0.3.0...v0.4.0) (2026-10-08)
 
 
