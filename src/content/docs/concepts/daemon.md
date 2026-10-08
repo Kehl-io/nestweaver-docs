@@ -28,14 +28,11 @@ The daemon follows a hands-off lifecycle — you rarely need to manage it direct
 **Version mismatch restart:** When a client connects to a running daemon and detects that the daemon binary is an older version than the client, it automatically restarts the daemon with the newer binary. This ensures that `cargo install` or npm updates take effect without manual daemon management.
 
 ```bash
-# Check daemon status
-nestweaver daemon status
-
-# Manually stop the daemon
-nestweaver daemon stop
-
-# Manually start (rarely needed — auto-start handles this)
-nestweaver daemon start
+# --db is required when NESTWEAVER_DB is unset. A bare daemon command
+# does not fall back to ./nestweaver.lbug.
+nestweaver daemon status --db ./nestweaver.lbug
+nestweaver daemon stop --db ./nestweaver.lbug
+nestweaver daemon start --db ./nestweaver.lbug
 ```
 
 ## Communication
@@ -78,7 +75,9 @@ On macOS, the recommended way to run NestWeaver is the native `.app` bundle. It 
 - **Web UI** at `http://127.0.0.1:9377` — opens automatically on launch
 
 ```bash
-# From the repository root. The script writes target/release/NestWeaver.app there.
+# From the repository root. fetch-lbug-source.sh must run first: app/build.sh
+# calls Cargo and does not fetch Ladybug itself.
+eval "$(scripts/fetch-lbug-source.sh)"
 bash app/build.sh
 open target/release/NestWeaver.app
 ```

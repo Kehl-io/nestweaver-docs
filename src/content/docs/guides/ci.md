@@ -87,18 +87,19 @@ Build writes next to the database as `snapshot-<instance>` unless you pass `--ou
 `snapshot push` has no `--db` flag. `nestweaver pull` clones a repository URL. It does not restore a snapshot. Restoring a published snapshot is `nestweaver instance pull <instance-id>`.
 
 ```bash
-nestweaver daemon stop
+nestweaver daemon stop --db ./nestweaver.lbug
 nestweaver snapshot build --db ./nestweaver.lbug --output ./snapshot-my-project
 nestweaver snapshot push --config ./nestweaver-instance.toml --snapshot-dir ./snapshot-my-project
 ```
 
-`[snapshot_storage]` has `backend`, `path`, `bucket`, `region`, and `project_id`. It has no `prefix` field.
+`daemon stop` does not assume `./nestweaver.lbug`. With `NESTWEAVER_DB` unset and no `--db`, it exits with "No database path provided."
+
+The local storage backend is the one that copies a snapshot. The S3 and GitLab backends are stubs: every method returns an error, including when the cloud credentials are set.
 
 ```toml
 [snapshot_storage]
-backend = "s3"
-bucket = "my-nestweaver-snapshots"
-region = "us-east-1"
+backend = "local"
+path = "~/.local/share/nestweaver/my-project/snapshots"
 ```
 
 ## Example GitHub Actions workflow
