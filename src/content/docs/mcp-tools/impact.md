@@ -26,7 +26,7 @@ Use before modifying a function, class, or interface. Results are sorted by `imp
 
 | Parameter         | Type      | Required | Description                                                                                                                              |
 | ----------------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `symbol`          | `string`  | Yes      | Symbol name or full UID. A bare name is an exact match. Ambiguous names need a repo selector or a UID.                                              |
+| `symbol`          | `string`  | Yes      | Symbol name or full UID. A bare name is an exact match. Ambiguous names need a repo selector or a UID.                                   |
 | `depth`           | `integer` | No       | Max traversal depth. Default 3.                                                                                                          |
 | `limit`           | `integer` | No       | Max impact nodes to return (default 50). Total count is always reported.                                                                 |
 | `response_format` | `string`  | No       | `"concise"` returns affected symbol names only; `"detailed"` (default) adds file paths, edge types, confidence scores, and depth levels. |
@@ -95,8 +95,8 @@ Betweenness is computed via Brandes' algorithm with sampling (approximate for la
 
 View the codebase's high-level architecture via Louvain-style local moving community detection. This is not the full Leiden algorithm. The entry point is still named `leiden`.
 
-| Parameter    | Type     | Required | Description                                                                                                                                             |
-| ------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter    | Type     | Required | Description                                                    |
+| ------------ | -------- | -------- | -------------------------------------------------------------- |
 | `resolution` | `number` | No       | Resolution. Higher yields more, smaller clusters. Default 0.5. |
 
 Returns cluster name, cohesion score, key files, and up to 20 member symbols per cluster.
@@ -105,11 +105,11 @@ Returns cluster name, cohesion score, key files, and up to 20 member symbols per
 
 Find cross-repository references to a symbol -- other repos that import, re-export, or implement the same symbol name.
 
-| Parameter | Type      | Required | Description                                                                              |
-| --------- | --------- | -------- | ---------------------------------------------------------------------------------------- |
-| `uid`     | `string`  | No       | Symbol UID. Preferred for unambiguous lookup.                                            |
-| `name`    | `string`  | No       | Symbol name. Ambiguous names fail. Pass `uid` to pin one symbol. |
-| `limit`   | `integer` | No       | Max contract links to return (default 50). Total count is always reported.               |
+| Parameter | Type      | Required | Description                                                                |
+| --------- | --------- | -------- | -------------------------------------------------------------------------- |
+| `uid`     | `string`  | No       | Symbol UID. Preferred for unambiguous lookup.                              |
+| `name`    | `string`  | No       | Symbol name. Ambiguous names fail. Pass `uid` to pin one symbol.           |
+| `limit`   | `integer` | No       | Max contract links to return (default 50). Total count is always reported. |
 
 Provide either `uid` or `name`. Only useful when multiple repos are indexed in the same brain. Contract links are hypotheses -- check confidence scores before acting.
 

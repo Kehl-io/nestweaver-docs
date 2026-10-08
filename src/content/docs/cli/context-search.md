@@ -9,17 +9,17 @@ These commands retrieve information from the NestWeaver knowledge graph. The `co
 
 ## Command reference
 
-| Command          | Description                             | Key Flags                                                                  |
-| ---------------- | --------------------------------------- | -------------------------------------------------------------------------- |
-| `context`        | PPR-ranked context around seed symbols  | `--intent`, `--limit`, `--token-budget`, `--feature`, `--config`, `--json` |
-| `search`         | Symbol-name substring lookup            | `--limit`, `--json`, `--config`                                            |
-| `symbol`         | Look up a symbol by name or UID         | `--instance`, `--json`                                                     |
-| `read-symbols`   | Read a symbol's source span             | `--neighbors`, `--token-budget`, `--root`, `--json`                        |
-| `regex-search`   | Regex search over indexed text          | `--path-prefix`, `--kinds`, `--limit`, `--max-millis`, `--json`            |
-| `count-patterns` | Count regex matches per pattern         | `--path-prefix`, `--kinds`, `--json`                                       |
-| `investigate`    | Orient on a topic in one call           | `--scope`, `--token-budget`, `--root`, `--json`                            |
-| `repo-map`       | Token-budgeted structural skeleton      | `--token-budget`, `--json`                                                 |
-| `summary`        | Hierarchical code summaries             | `--level`, `--token-budget`, `--target`, `--json`                          |
+| Command          | Description                            | Key Flags                                                                  |
+| ---------------- | -------------------------------------- | -------------------------------------------------------------------------- |
+| `context`        | PPR-ranked context around seed symbols | `--intent`, `--limit`, `--token-budget`, `--feature`, `--config`, `--json` |
+| `search`         | Symbol-name substring lookup           | `--limit`, `--json`, `--config`                                            |
+| `symbol`         | Look up a symbol by name or UID        | `--instance`, `--json`                                                     |
+| `read-symbols`   | Read a symbol's source span            | `--neighbors`, `--token-budget`, `--root`, `--json`                        |
+| `regex-search`   | Regex search over indexed text         | `--path-prefix`, `--kinds`, `--limit`, `--max-millis`, `--json`            |
+| `count-patterns` | Count regex matches per pattern        | `--path-prefix`, `--kinds`, `--json`                                       |
+| `investigate`    | Orient on a topic in one call          | `--scope`, `--token-budget`, `--root`, `--json`                            |
+| `repo-map`       | Token-budgeted structural skeleton     | `--token-budget`, `--json`                                                 |
+| `summary`        | Hierarchical code summaries            | `--level`, `--token-budget`, `--target`, `--json`                          |
 
 ## Context retrieval
 

@@ -86,10 +86,10 @@ Default allowlist excludes `Projects.md`, `index.md`, `README.md`, and MOC-conta
 
 Discover thematic structure of a vault by running Louvain-style local moving community detection over the note-to-note wikilink graph.
 
-| Parameter    | Type      | Required | Description                                                             |
-| ------------ | --------- | -------- | ----------------------------------------------------------------------- |
-| `resolution` | `number`  | No       | Resolution. Higher yields more, smaller clusters. Default 0.5. |
-| `limit`      | `integer` | No       | Max clusters to return (default 50). Total count is always reported.    |
+| Parameter    | Type      | Required | Description                                                          |
+| ------------ | --------- | -------- | -------------------------------------------------------------------- |
+| `resolution` | `number`  | No       | Resolution. Higher yields more, smaller clusters. Default 0.5.       |
+| `limit`      | `integer` | No       | Max clusters to return (default 50). Total count is always reported. |
 
 Each cluster is labelled by its most central member (highest PageRank).
 

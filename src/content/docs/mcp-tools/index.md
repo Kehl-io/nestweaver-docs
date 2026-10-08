@@ -88,9 +88,9 @@ Query custom metadata set via `set_extension`. Two modes: by `uid` (all properti
 
 Remove one custom property from one node.
 
-| Parameter | Type     | Required | Description          |
-| --------- | -------- | -------- | -------------------- |
-| `uid`     | `string` | Yes      | Node UID.            |
+| Parameter | Type     | Required | Description              |
+| --------- | -------- | -------- | ------------------------ |
+| `uid`     | `string` | Yes      | Node UID.                |
 | `key`     | `string` | Yes      | Property name to delete. |
 
 ### compact_embeddings

@@ -31,7 +31,7 @@ Use for exact pattern matching. For fuzzy or semantic lookup, use `brain_search`
 | `pattern`     | `string`   | Yes      | Rust regex pattern. Example: `"fn\\s+authenticate"` or `"(?i)todo"`.          |
 | `path_prefix` | `string`   | No       | Restrict to nodes whose file path starts with this prefix.                    |
 | `kinds`       | `string[]` | No       | Restrict to these node kinds: `Section`, `Note`, `Symbol` (case-insensitive). |
-| `limit`       | `integer`  | No       | Maximum results to return. Default 50. Maximum 10000.   |
+| `limit`       | `integer`  | No       | Maximum results to return. Default 50. Maximum 10000.                         |
 | `max_millis`  | `integer`  | No       | Wall-clock time budget in milliseconds. Default 2000.                         |
 
 ## count_patterns

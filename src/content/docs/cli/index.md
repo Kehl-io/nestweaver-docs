@@ -11,25 +11,25 @@ The NestWeaver CLI is the primary interface for indexing codebases, querying the
 
 These flags work on every command.
 
-| Flag          | Short | Description                                                                    |
-| ------------- | ----- | ------------------------------------------------------------------------------ |
-| `--stats`     |       | Print timing and statistics after operations                                   |
-| `--quiet`     | `-q`  | Suppress non-essential output                                                  |
-| `--verbose`   | `-v`  | Show additional detail (e.g. UIDs)                                             |
-| `--no-color`  |       | Disable colored output                                                         |
-| `--plain`     |       | Alias for `--no-color`                                                         |
+| Flag         | Short | Description                                  |
+| ------------ | ----- | -------------------------------------------- |
+| `--stats`    |       | Print timing and statistics after operations |
+| `--quiet`    | `-q`  | Suppress non-essential output                |
+| `--verbose`  | `-v`  | Show additional detail (e.g. UIDs)           |
+| `--no-color` |       | Disable colored output                       |
+| `--plain`    |       | Alias for `--no-color`                       |
 
 ## Exit codes
 
-| Code | Meaning |
-| ---- | ------- |
-| 0    | Success |
-| 1    | The command failed |
+| Code | Meaning                                                                                                 |
+| ---- | ------------------------------------------------------------------------------------------------------- |
+| 0    | Success                                                                                                 |
+| 1    | The command failed                                                                                      |
 | 2    | Target not found. Also: `stale-check` found drift, `pr-impact --strict` blocked, or `dead-code` refused |
-| 3    | Ambiguous match |
-| 4    | Unauthorized (`pull` only) |
-| 5    | Unavailable (`pull` only) |
-| 64   | Usage error (unknown flag, bad value) |
+| 3    | Ambiguous match                                                                                         |
+| 4    | Unauthorized (`pull` only)                                                                              |
+| 5    | Unavailable (`pull` only)                                                                               |
+| 64   | Usage error (unknown flag, bad value)                                                                   |
 
 ## Command groups
 
