@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-NestWeaver can be installed several ways depending on your platform and preferences.
+Install the CLI, then [index a repository](/getting-started/quick-start/). If you want the picture first, read [what NestWeaver is](/getting-started/overview/) or the [Web UI tour](/web-ui/).
 
 ## npm (recommended)
 
