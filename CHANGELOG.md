@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/Kehl-io/nestweaver-docs/compare/v0.2.2...v0.3.0) (2026-10-08)
+
+
+### Features
+
+* show what NestWeaver is and add UI screenshots ([#12](https://github.com/Kehl-io/nestweaver-docs/issues/12)) ([47162a2](https://github.com/Kehl-io/nestweaver-docs/commit/47162a2ff8d731b472832e9d26a6baa9e588e049))
+
 ## [0.2.2](https://github.com/Kehl-io/nestweaver-docs/compare/v0.2.1...v0.2.2) (2026-10-08)
 
 
