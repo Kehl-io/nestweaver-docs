@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/Kehl-io/nestweaver-docs/compare/v0.3.0...v0.4.0) (2026-10-08)
+
+
+### Features
+
+* explain why the graph replaces reading the tree ([#14](https://github.com/Kehl-io/nestweaver-docs/issues/14)) ([cb7ad73](https://github.com/Kehl-io/nestweaver-docs/commit/cb7ad73f84e2d72e5f634bb64c3a7ace00e7c7ee))
+
 ## [0.3.0](https://github.com/Kehl-io/nestweaver-docs/compare/v0.2.2...v0.3.0) (2026-10-08)
 
 
