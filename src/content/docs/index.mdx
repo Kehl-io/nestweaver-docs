@@ -17,7 +17,9 @@ hero:
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-NestWeaver parses your code into symbols, calls, and imports, then answers from that graph. Agents get a ranked slice of the structure instead of opening files until the context window fills up. You can look at the same graph in a browser.
+An agent that starts from the file tree reads until the context window is full, and still may not have the caller, the type, or the test. Search finds the string. It does not say what reaches this function, or what a diff puts at risk.
+
+NestWeaver parses the repository once into symbols, calls, and imports, and answers from that graph. The answer is a short, ranked neighborhood — the same one you can open in the browser — instead of a pile of files.
 
 ![NestWeaver web UI overview: files on the left, the graph in the center, details on the right](/images/web-ui.png)
 
