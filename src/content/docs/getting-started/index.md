@@ -46,9 +46,11 @@ sudo mv nestweaver /usr/local/bin/
 Build **NestWeaver.app** from source (it bundles Metal-accelerated embeddings and the web UI):
 
 ```bash
-cd app && bash build.sh
+bash app/build.sh
 open target/release/NestWeaver.app
 ```
+
+Run both from the repository root. `app/build.sh` writes the bundle to `target/release/NestWeaver.app` at that root. `cd app` first makes `open target/release/NestWeaver.app` look in the wrong directory.
 
 The `.app` bundle includes a menubar status icon, Metal GPU acceleration for faster embeddings, automatic daemon lifecycle, a web UI on port 9377, and crash recovery.
 

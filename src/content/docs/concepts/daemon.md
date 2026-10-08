@@ -78,10 +78,9 @@ On macOS, the recommended way to run NestWeaver is the native `.app` bundle. It 
 - **Web UI** at `http://127.0.0.1:9377` — opens automatically on launch
 
 ```bash
-# Build from source
-cd app && bash build.sh
+# From the repository root. The script writes target/release/NestWeaver.app there.
+bash app/build.sh
 open target/release/NestWeaver.app
-
 ```
 
 On Linux and headless macOS environments, use `nestweaver daemon start` or let auto-start handle it.

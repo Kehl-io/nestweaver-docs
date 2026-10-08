@@ -62,8 +62,11 @@ nestweaver dead-code --db ./nestweaver.lbug --json
 
 `pr-impact` scores changed files as **Low**, **Medium**, **High**, or **Unknown**. `Unknown` means the change was not assessed. Do not treat it as Low, and there is no Critical band.
 
+With neither `--files` nor `--base`, the command runs `git diff --name-only` against the working tree. A clean checkout has no uncommitted diff, so the assessment is empty. Pass a merge-base SHA so the diff is the PR's changes. `--base` still includes uncommitted edits when any exist; a merge-base SHA keeps those out of a clean Actions checkout.
+
 ```bash
-nestweaver pr-impact --db ./nestweaver.lbug
+base="$(git merge-base "$BASE_SHA" HEAD)"
+nestweaver pr-impact --base "$base" --db ./nestweaver.lbug
 ```
 
 ### Affected tests
@@ -77,11 +80,16 @@ nestweaver affected-tests --base-ref main --db ./nestweaver.lbug --json \
 
 ## Snapshots
 
-`snapshot build` writes a snapshot of the current database. `snapshot push` uploads a snapshot directory. It has no `--db` flag. `nestweaver pull` clones a repository URL. It does not restore a snapshot. Restoring a published snapshot is `nestweaver instance pull <instance-id>`.
+`index` starts the daemon. `snapshot build` copies the database file and refuses while that daemon, or a standalone watcher, is still writing it. Stop the daemon first.
+
+Build writes next to the database as `snapshot-<instance>` unless you pass `--output`. Push does not read that directory on its own. With `--config` and no `--snapshot-dir`, push looks in the user data directory at `nestweaver/<instance-id>/snapshot`. Pass the same path to both.
+
+`snapshot push` has no `--db` flag. `nestweaver pull` clones a repository URL. It does not restore a snapshot. Restoring a published snapshot is `nestweaver instance pull <instance-id>`.
 
 ```bash
-nestweaver snapshot build --db ./nestweaver.lbug --config ./nestweaver-instance.toml
-nestweaver snapshot push --config ./nestweaver-instance.toml
+nestweaver daemon stop
+nestweaver snapshot build --db ./nestweaver.lbug --output ./snapshot-my-project
+nestweaver snapshot push --config ./nestweaver-instance.toml --snapshot-dir ./snapshot-my-project
 ```
 
 `[snapshot_storage]` has `backend`, `path`, `bucket`, `region`, and `project_id`. It has no `prefix` field.
@@ -119,7 +127,9 @@ jobs:
         run: nestweaver dead-code --db ./nestweaver.lbug --json
 
       - name: PR impact
-        run: nestweaver pr-impact --db ./nestweaver.lbug
+        run: |
+          base="$(git merge-base "${{ github.event.pull_request.base.sha }}" HEAD)"
+          nestweaver pr-impact --base "$base" --db ./nestweaver.lbug
 ```
 
-`fetch-depth: 0` gives `pr-impact` and co-change mining the git history they read.
+`fetch-depth: 0` is what makes that merge-base resolve. Co-change mining reads the same history.

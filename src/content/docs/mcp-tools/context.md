@@ -7,6 +7,18 @@ sidebar:
 
 Context tools retrieve ranked, token-budgeted information from the knowledge graph. They are the primary entry point for understanding code and notes before reading source files.
 
+## code_context
+
+Code-only Personalized PageRank. It does not return notes, tags, or wikilinks. Use it for the symbols around a function or class. `brain_context` is the code-plus-notes walk.
+
+A seed may be a symbol name, a `sym:` UID, or a repo-relative file path. The engine expands a path to the symbols in that file. A question belongs on `investigate`.
+
+| Parameter | Type       | Required | Description                                                                                                                                                       |
+| --------- | ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `seeds`   | `string[]` | Yes      | Symbol names, `sym:` UIDs, or one repo-relative file path.                                                                                                        |
+| `limit`   | `integer`  | No       | Maximum connected symbols to return. Default 500. Maximum 5000. The response reports when it truncates.                                                           |
+| `intent`  | `string`   | No       | `find-definition`, `understand-architecture`, `analyze-impact`, `general-context`, or `project-context`, plus their short aliases. Omit for the standard damping. |
+
 ## brain_context
 
 Retrieve PPR-ranked structural context from the knowledge graph, seeded by symbol names, note titles, or keywords. Returns mixed-kind results (Symbol, Note, Section, Tag, Heading) within a token budget.

@@ -7,7 +7,7 @@ sidebar:
 
 An instance config names the repos NestWeaver indexes, how they relate, and where snapshots and workspace checkouts live. `nestweaver index` and `nestweaver setup` do not create this file.
 
-NestWeaver looks for it beside the repo as `.nestweaver/instance.toml`, `nestweaver-instance.toml`, or `instance.toml`. Pass `--config` when the file lives somewhere else. With neither `--instance` nor a config, commands use the instance id `default`.
+Pass `--config` on index and query commands. Placing `.nestweaver/instance.toml`, `nestweaver-instance.toml`, or `instance.toml` beside the repo does not load it for those commands. That filename search exists only so `pr-impact` can find a `[pr_impact]` policy. With neither `--instance` nor `--config`, commands use the instance id `default`.
 
 The canonical minimal file in the NestWeaver repo is `examples/minimal-instance.toml`. Validate a copy before using it:
 
