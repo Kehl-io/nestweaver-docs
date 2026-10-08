@@ -5,7 +5,23 @@ sidebar:
   order: 4
 ---
 
+import Flow from '../../../components/diagrams/Flow.astro';
+
 NestWeaver can run in CI for dead-code review, pull-request impact, and affected-test selection. Published commands use the same daemon route as a local shell. Do not pass `--no-daemon` and do not set `NESTWEAVER_NO_DAEMON`. That flag exists only inside unpublished CI tests and is ignored everywhere else.
+
+<Flow
+  label="A pull-request check"
+  caption="Pass pr-impact the merge-base of the pull request. dead-code exit 0 means a review was produced, not that the build failed."
+  columns={[
+    [{ id: 'install', title: 'Install', detail: 'npm or archive' }],
+    [{ id: 'index', title: 'index --repo', detail: 'write the graph' }],
+    [
+      { id: 'impact', title: 'pr-impact', detail: 'risk of the diff' },
+      { id: 'tests', title: 'affected-tests', detail: 'what to run' },
+      { id: 'dead', title: 'dead-code', detail: 'a review list' },
+    ],
+  ]}
+/>
 
 ## Install
 

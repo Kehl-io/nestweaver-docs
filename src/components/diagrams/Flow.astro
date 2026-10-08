@@ -1,0 +1,165 @@
+---
+interface Node {
+  id: string;
+  title: string;
+  detail?: string;
+  accent?: boolean;
+}
+
+interface Link {
+  from: string;
+  to: string;
+  label?: string;
+}
+
+interface Props {
+  label: string;
+  caption: string;
+  columns: Node[][];
+  links?: Link[];
+}
+
+const { label, caption, columns, links } = Astro.props;
+
+const colW = 176;
+const nodeH = 72;
+const gapX = 72;
+const gapY = 18;
+const pad = 12;
+
+const rows = Math.max(...columns.map((column) => column.length));
+const width = pad * 2 + columns.length * colW + (columns.length - 1) * gapX;
+const height = pad * 2 + rows * nodeH + Math.max(0, rows - 1) * gapY;
+
+const positions = new Map<string, { x: number; y: number }>();
+columns.forEach((column, columnIndex) => {
+  const stackH = column.length * nodeH + Math.max(0, column.length - 1) * gapY;
+  const offsetY = (height - stackH) / 2;
+  column.forEach((node, rowIndex) => {
+    positions.set(node.id, {
+      x: pad + columnIndex * (colW + gapX),
+      y: offsetY + rowIndex * (nodeH + gapY),
+    });
+  });
+});
+
+const edges: Link[] =
+  links ??
+  columns.slice(0, -1).flatMap((column, columnIndex) => {
+    const next = columns[columnIndex + 1];
+    if (column.length === 1) {
+      return next.map((node) => ({ from: column[0].id, to: node.id }));
+    }
+    if (next.length === 1) {
+      return column.map((node) => ({ from: node.id, to: next[0].id }));
+    }
+    return column.map((node, index) => ({
+      from: node.id,
+      to: (next[index] ?? next[0]).id,
+    }));
+  });
+
+const titleId = `nw-${label
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-|-$/g, '')}`;
+const markerId = `${titleId}-arrow`;
+---
+
+<figure class="nw-figure">
+  <svg
+    class="nw-diagram"
+    viewBox={`0 0 ${width} ${height}`}
+    style={`min-width: ${width}px`}
+    role="img"
+    aria-labelledby={titleId}
+  >
+    <title id={titleId}>{label}</title>
+    <defs>
+      <marker
+        id={markerId}
+        viewBox="0 0 10 10"
+        refX="9"
+        refY="5"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto-start-reverse"
+      >
+        <path d="M 0 0 L 10 5 L 0 10 z" class="nw-arrow"></path>
+      </marker>
+    </defs>
+    {
+      edges.map((edge) => {
+        const source = positions.get(edge.from);
+        const target = positions.get(edge.to);
+        if (!source || !target) return null;
+        const x1 = source.x + colW;
+        const y1 = source.y + nodeH / 2;
+        const x2 = target.x - 6;
+        const y2 = target.y + nodeH / 2;
+        const mid = (x1 + x2) / 2;
+        return (
+          <g>
+            <path
+              d={`M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`}
+              class="nw-edge"
+              marker-end={`url(#${markerId})`}
+            />
+            {edge.label && (
+              <g>
+                <rect
+                  class="nw-edge-pill"
+                  x={mid - (edge.label.length * 3.6 + 8)}
+                  y={(y1 + y2) / 2 - 18}
+                  width={edge.label.length * 7.2 + 16}
+                  height="16"
+                  rx="0"
+                />
+                <text class="nw-edge-label" x={mid} y={(y1 + y2) / 2 - 6} text-anchor="middle">
+                  {edge.label}
+                </text>
+              </g>
+            )}
+          </g>
+        );
+      })
+    }
+    {
+      columns.flat().map((node) => {
+        const pos = positions.get(node.id);
+        if (!pos) return null;
+        return (
+          <g>
+            <rect
+              x={pos.x}
+              y={pos.y}
+              width={colW}
+              height={nodeH}
+              rx="4"
+              class:list={['nw-node', { 'nw-node-accent': node.accent }]}
+            />
+            <text
+              class:list={['nw-node-title', { 'nw-on-accent': node.accent }]}
+              x={pos.x + colW / 2}
+              y={node.detail ? pos.y + 32 : pos.y + 41}
+              text-anchor="middle"
+            >
+              {node.title}
+            </text>
+            {node.detail && (
+              <text
+                class:list={['nw-node-detail', { 'nw-on-accent': node.accent }]}
+                x={pos.x + colW / 2}
+                y={pos.y + 52}
+                text-anchor="middle"
+              >
+                {node.detail}
+              </text>
+            )}
+          </g>
+        );
+      })
+    }
+  </svg>
+  <figcaption>{caption}</figcaption>
+</figure>

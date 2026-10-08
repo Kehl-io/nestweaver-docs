@@ -1,0 +1,29 @@
+---
+interface Tile {
+  title: string;
+  detail: string;
+  accent?: boolean;
+}
+
+interface Props {
+  label: string;
+  caption?: string;
+  tiles: Tile[];
+}
+
+const { label, caption, tiles } = Astro.props;
+---
+
+<figure class="nw-figure">
+  <ul class="nw-tiles" aria-label={label}>
+    {
+      tiles.map((tile) => (
+        <li class:list={[{ 'nw-tile-accent': tile.accent }]}>
+          <strong>{tile.title}</strong>
+          <span>{tile.detail}</span>
+        </li>
+      ))
+    }
+  </ul>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

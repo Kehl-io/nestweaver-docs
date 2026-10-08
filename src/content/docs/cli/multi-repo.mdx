@@ -5,7 +5,22 @@ sidebar:
   order: 6
 ---
 
+import Flow from '../../../components/diagrams/Flow.astro';
+
 Projects group repositories, vault folders, and feature bundles into named units that scope queries to just the code that matters. NestWeaver detects cross-repo dependencies at three confidence layers — declared links in config, inferred links from shared symbols, and implicit links from vault structure — giving you a unified view across repository boundaries.
+
+<Flow
+  label="Several repositories, one database, one project"
+  caption="Index each repo into the same database, then materialize the project so queries can stay inside that group."
+  columns={[
+    [
+      { id: 'api', title: 'payments-api' },
+      { id: 'worker', title: 'payments-worker' },
+    ],
+    [{ id: 'db', title: 'nestweaver.lbug', detail: 'one file', accent: true }],
+    [{ id: 'project', title: 'payments', detail: 'a project' }],
+  ]}
+/>
 
 ## Command reference
 

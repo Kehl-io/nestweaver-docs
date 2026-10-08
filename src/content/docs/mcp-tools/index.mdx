@@ -5,7 +5,21 @@ sidebar:
   order: 1
 ---
 
+import Tiles from '../../../components/diagrams/Tiles.astro';
+
 NestWeaver exposes 43 tools via the [Model Context Protocol](https://modelcontextprotocol.io) (MCP), giving AI coding agents structured access to the knowledge graph. Every tool accepts JSON parameters and returns structured JSON responses.
+
+<Tiles
+  label="The 43 tools in five groups"
+  caption="Cursor’s lite mode exposes six of these: brain_context, brain_search, brain_impact, brain_status, brain_guide, and detect_changes."
+  tiles={[
+    { title: 'Context', detail: 'A ranked neighborhood for a name, file, or project.' },
+    { title: 'Navigation', detail: 'Read a symbol, trace calls, or follow a question.' },
+    { title: 'Impact', detail: 'What a change reaches, including tests and dead code.' },
+    { title: 'Vault', detail: 'Notes, backlinks, tags, and the sources you indexed.' },
+    { title: 'Utility', detail: 'Staleness, sidecars, and custom metadata.' },
+  ]}
+/>
 
 ## Setup
 

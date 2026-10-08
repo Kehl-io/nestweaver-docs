@@ -5,9 +5,24 @@ sidebar:
   order: 3
 ---
 
+import Flow from '../../../components/diagrams/Flow.astro';
+
 Standard PageRank measures global importance — which nodes in a graph are most connected overall. Personalized PageRank (PPR) measures relevance to a specific starting point. NestWeaver uses PPR to answer the question "given that I'm working on symbol X, which other symbols are most relevant?" by walking the graph outward from query seeds.
 
 PPR is one of three signals NestWeaver fuses for retrieval (alongside BM25 and semantic similarity), weighted at 40% by default. See [Token-Budget Extraction](/concepts/token-budget/) for how the three signals combine.
+
+<Flow
+  label="A walk outward from one seed"
+  caption="The walk starts at the symbol you named. A call carries more of it than a type use or a field access."
+  columns={[
+    [{ id: 'seed', title: 'processPayment', detail: 'the seed', accent: true }],
+    [
+      { id: 'call', title: 'chargeCard', detail: 'CALLS 1.0' },
+      { id: 'type', title: 'Payment', detail: 'USES 0.5' },
+      { id: 'field', title: 'amount', detail: 'ACCESSES 0.4' },
+    ],
+  ]}
+/>
 
 ## Forward Push algorithm
 

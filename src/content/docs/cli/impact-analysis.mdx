@@ -5,7 +5,21 @@ sidebar:
   order: 4
 ---
 
+import Flow from '../../../components/diagrams/Flow.astro';
+
 NestWeaver's analysis commands help you understand the consequences of changes before you make them. The `impact` command traces the blast radius of a symbol through the dependency graph with confidence-weighted scoring, while `pr-impact` analyzes an entire PR's changed files and assigns a risk level. These are structural analyses based on the graph — no LLM required.
+
+<Flow
+  label="Impact walks back from a symbol to its callers"
+  caption="checkout and refund call processPayment, so they sit in its blast radius. The walk follows incoming calls, imports, and inheritance."
+  columns={[
+    [
+      { id: 'checkout', title: 'checkout' },
+      { id: 'refund', title: 'refund' },
+    ],
+    [{ id: 'pay', title: 'processPayment', detail: 'the symbol', accent: true }],
+  ]}
+/>
 
 ## Command reference
 
