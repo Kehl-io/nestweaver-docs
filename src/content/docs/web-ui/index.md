@@ -5,14 +5,34 @@ sidebar:
   order: 1
 ---
 
-NestWeaver ships an interactive web workspace that turns the code+notes graph into something you explore by task, not by graph theory. It runs on Three.js / React-Three-Fiber and opens on a **repo-galaxy constellation** — one luminous cluster per repository — rendered dark-first.
+`nestweaver ui` opens the same graph the CLI queries. Use it when you want to see a symbol, its source, and its neighbors at the same time.
 
 ```bash
-nestweaver ui --db ./nestweaver.lbug --port 8080
-nestweaver ui --db ./nestweaver.lbug --port 8080 --watch  # live re-indexing
+nestweaver ui
 ```
 
-Open `http://localhost:8080` after it starts. The CLI defaults to port 3000; the macOS `.app` serves it on 9377 and opens it automatically.
+The server listens on port 3000. Open `http://127.0.0.1:3000`. Pass `--db` if the database is not `./nestweaver.lbug` in the current directory. The macOS app serves the same UI on port 9377.
+
+## Overview
+
+This is the first screen. The sample is one small repository, so the graph stays readable.
+
+![Web UI overview of a sample repository, with the file tree, graph, and an empty details panel](/images/web-ui.png)
+
+- **Left** — files, symbols, and notes in the current scope.
+- **Center** — the task mode (Overview is selected) and the graph. Start Here summarizes what is indexed.
+- **Right** — details for the selection. It stays empty until you pick a node.
+- **Green chip** — whether the view is local or federated, and whether the index is current. Read it before trusting the picture.
+
+## A selected symbol
+
+Choose a function in the symbol list. The center switches to Context, the evidence panel shows the source span, and the card on the right lists callers and callees.
+
+![run_query selected in the web UI, with source on the right and parse_source and search_index in the graph](/images/web-ui-symbol.png)
+
+The toolbar above the graph switches representation: graph, table, matrix, or JSON. These screenshots show the graph. Table and JSON are the same nodes in a form you can scan or copy. Press `⌘L` to cycle graph, table, and matrix.
+
+Impact, Repos, Features, and Local use the same three columns. They are not pictured here.
 
 ## Work by task, not by graph theory
 

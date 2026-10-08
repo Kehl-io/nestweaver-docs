@@ -1,15 +1,52 @@
 ---
 title: NestWeaver Docs
-description: Documentation for NestWeaver — a code intelligence knowledge graph for AI agents. Precomputed answers, not raw files.
+description: NestWeaver indexes a codebase into a queryable graph for you and your AI agents.
 template: splash
 hero:
-  title: NestWeaver Docs
-  tagline: Your codebase as a queryable graph — built for AI agents. Precomputed answers about symbols, dependencies, and call graphs — no source reading required.
+  title: NestWeaver
+  tagline: Index a repository once. Ask what a symbol does, what a change touches, and which tests to run — from the CLI, your editor, or a local graph UI.
   actions:
-    - text: Get Started
+    - text: Install
       link: /getting-started/
+      icon: right-arrow
       variant: primary
-    - text: View on GitHub
-      link: https://github.com/Kehl-io/nestweaver
-      variant: minimal
+    - text: See the UI
+      link: /web-ui/
+      icon: laptop
 ---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+NestWeaver parses your code into symbols, calls, and imports, then answers from that graph. Agents get a ranked slice of the structure instead of opening files until the context window fills up. You can look at the same graph in a browser.
+
+![NestWeaver web UI overview: files on the left, the graph in the center, details on the right](/images/web-ui.png)
+
+The overview above is a small sample project. The center is the graph. The right-hand panel is empty until you select a symbol. The green chip says the view is local and current.
+
+<CardGrid stagger>
+  <Card title="Query the graph" icon="magnifier">
+    `nestweaver context` returns the symbols around a name or file. `search` finds a symbol by name.
+    A question in plain language goes to `investigate`.
+  </Card>
+  <Card title="Hand it to an agent" icon="puzzle">
+    `nestweaver setup` connects the editor you already use. The agent then calls 43 MCP tools, or
+    six in Cursor’s lite mode.
+  </Card>
+  <Card title="See a change before you merge it" icon="warning">
+    `pr-impact` scores a diff. `affected-tests` lists tests to run. `dead-code` is a review list,
+    not a list of things to delete.
+  </Card>
+  <Card title="Open the workspace" icon="laptop">
+    `nestweaver ui` serves this view on port 3000. Pick a symbol and the source, callers, and
+    callees show up beside the graph. [Tour the UI](/web-ui/).
+  </Card>
+</CardGrid>
+
+## First session
+
+1. [Install the CLI](/getting-started/) with npm. No Rust toolchain required.
+2. [Index the repo you are in](/getting-started/quick-start/) with `nestweaver index --repo .`
+3. Ask for one symbol: `nestweaver context <name>`
+4. Open `nestweaver ui` and select that symbol.
+
+[What NestWeaver is](/getting-started/overview/) explains the three surfaces — CLI, editor, and web UI — before the command reference.
