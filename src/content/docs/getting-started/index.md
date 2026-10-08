@@ -19,12 +19,12 @@ nestweaver --version
 
 ## Cargo
 
-If you already have Rust 1.85+ installed:
+There is no published crates.io package. From a source checkout, fetch the pinned Ladybug sources and install the local crate:
 
 ```bash
-cargo install nestweaver
+eval "$(scripts/fetch-lbug-source.sh)"
+cargo install --locked --path .
 nestweaver --version
-# Expected: nestweaver X.Y.Z
 ```
 
 ## Pre-built binaries
@@ -46,9 +46,12 @@ sudo mv nestweaver /usr/local/bin/
 Build **NestWeaver.app** from source (it bundles Metal-accelerated embeddings and the web UI):
 
 ```bash
-cd app && bash build.sh
+eval "$(scripts/fetch-lbug-source.sh)"
+bash app/build.sh
 open target/release/NestWeaver.app
 ```
+
+Run these from the repository root. `app/build.sh` calls `cargo build` and does not fetch Ladybug itself. Without `LBUG_SOURCE_DIR` from `scripts/fetch-lbug-source.sh`, that Cargo build cannot compile the pinned database crate. The script writes the bundle to `target/release/NestWeaver.app` at the repo root. `cd app` first makes `open target/release/NestWeaver.app` look in the wrong directory.
 
 The `.app` bundle includes a menubar status icon, Metal GPU acceleration for faster embeddings, automatic daemon lifecycle, a web UI on port 9377, and crash recovery.
 
@@ -61,7 +64,7 @@ nestweaver --version
 # Expected: nestweaver X.Y.Z
 ```
 
-Run `nestweaver --help` to see the full command list. All commands support `--json` for machine-readable output.
+Run `nestweaver --help` to see the full command list. `--json` is per command, not a global flag.
 
 ## Next steps
 

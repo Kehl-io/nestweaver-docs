@@ -1,11 +1,11 @@
 ---
 title: MCP Tools
-description: Reference for NestWeaver's 40 MCP tools — context retrieval, code navigation, impact analysis, and vault management.
+description: Reference for NestWeaver's 43 MCP tools — context retrieval, code navigation, impact analysis, and vault management.
 sidebar:
   order: 1
 ---
 
-NestWeaver exposes 40 tools via the [Model Context Protocol](https://modelcontextprotocol.io) (MCP), giving AI coding agents structured access to the knowledge graph. Every tool accepts JSON parameters and returns structured JSON responses.
+NestWeaver exposes 43 tools via the [Model Context Protocol](https://modelcontextprotocol.io) (MCP), giving AI coding agents structured access to the knowledge graph. Every tool accepts JSON parameters and returns structured JSON responses.
 
 ## Setup
 
@@ -23,11 +23,11 @@ Run `nestweaver setup` to auto-configure your agent's MCP connection. Supported 
 
 | Category                                  | Tools                                                                                                                                                                                                                                                     | Purpose                                          |
 | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| [Context](/mcp-tools/context/)            | `brain_context`, `brain_search`, `project_context`, `get_summary`, `brain_status`, `brain_guide`, `brain_diff`                                                                                                                                            | Retrieve ranked context from the knowledge graph |
+| [Context](/mcp-tools/context/)            | `brain_context`, `code_context`, `brain_search`, `project_context`, `get_summary`, `brain_status`, `brain_guide`, `brain_diff`                                                                                                                            | Retrieve ranked context from the knowledge graph |
 | [Code Navigation](/mcp-tools/navigation/) | `read_symbols`, `regex_search`, `count_patterns`, `flow_trace`, `investigate`, `investigate_expand`, `investigate_hydrate`                                                                                                                                | Navigate symbols, trace execution flows          |
 | [Impact Analysis](/mcp-tools/impact/)     | `blast_radius`, `brain_impact`, `affected_tests`, `dead_code`, `detect_changes`, `hub_nodes`, `bridge_nodes`, `clusters`, `cross_repo_contracts`, `contract_drift`                                                                                        | Assess change impact and architectural risk      |
 | [Vault & Notes](/mcp-tools/vault/)        | `note_get`, `backlinks`, `brain_add_source`, `brain_remove_source`, `brain_broken_links`, `brain_orphan_documents`, `brain_topic_clusters`, `brain_tag_graph`, `brain_doc_stats`, `brain_memory_lint`, `brain_memory_consolidate`, `brain_memory_related` | Query vaults, manage knowledge sources           |
-| Utility                                   | `stale_check`, `prune_stale`, `set_extension`, `query_extensions`                                                                                                                                                                                         | Graph maintenance and custom metadata            |
+| Utility                                   | `stale_check`, `prune_stale`, `compact_embeddings`, `set_extension`, `unset_extension`, `query_extensions`                                                                                                                                                | Graph maintenance and custom metadata            |
 
 ## Common parameters
 
@@ -54,7 +54,7 @@ These tools handle graph maintenance and custom metadata. They are not covered o
 
 ### stale_check
 
-Check whether the graph index is current by comparing each repo's indexed git SHA against HEAD.
+Check whether the graph index is current. Compares each repo's indexed git SHA with HEAD and checks that edges were built by the current resolver generation. A generation mismatch reports `outdated_resolver`.
 
 No parameters required.
 
@@ -83,3 +83,18 @@ Query custom metadata set via `set_extension`. Two modes: by `uid` (all properti
 | `uid`     | `string` | No       | Return all custom properties for this node. When provided, `key` and `value` are ignored. |
 | `key`     | `string` | No       | Property name to filter by. Required when not using `uid` mode.                           |
 | `value`   | `any`    | No       | Value to match (exact match only). Required when `key` is provided.                       |
+
+### unset_extension
+
+Remove one custom property from one node.
+
+| Parameter | Type     | Required | Description              |
+| --------- | -------- | -------- | ------------------------ |
+| `uid`     | `string` | Yes      | Node UID.                |
+| `key`     | `string` | Yes      | Property name to delete. |
+
+### compact_embeddings
+
+Reclaim embedding vectors left behind by deleted graph nodes. This does not re-embed the graph.
+
+`code_context` is the code-only PageRank walk. File paths are seeds there. `brain_context` takes note titles, tags, symbol names, and UIDs.

@@ -50,7 +50,7 @@ nestweaver list-projects --db ./all.lbug --json
 
 ## Project-scoped context
 
-`project-context` returns all notes and symbols belonging to the project, ranked by PPR. The `--token-budget` flag (default 3000) controls output size. Use `--since` to hard-filter old notes, or `--recency-weight` for a soft age-decay boost.
+`project-context` returns a concise orientation of about 1000 tokens by default: kind, title, and location. `--detailed` is about 3000 tokens and adds UIDs. Pass `--token-budget` to override that cap. Linked notes from outside the project are excluded.
 
 ```bash
 # Get context for a project

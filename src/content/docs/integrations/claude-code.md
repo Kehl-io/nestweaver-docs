@@ -34,7 +34,7 @@ This writes three artifacts to your project:
 }
 ```
 
-This gives Claude Code access to all 40 NestWeaver MCP tools — context retrieval, code navigation, impact analysis, and vault queries.
+This gives Claude Code access to all 43 NestWeaver MCP tools — context retrieval, code navigation, impact analysis, and vault queries.
 
 ### Enrichment hooks (`.claude/settings.json`)
 
@@ -72,7 +72,7 @@ Use MCP tools and CLI in different contexts for optimal token efficiency:
 | Hooks/scripts     | CLI with `--json`                                               | Machine-readable output, no schema cost               |
 
 :::tip[Token efficiency]
-In subagents, always use the CLI: `nestweaver context "UserService" --token-budget 2000 --json`. The CLI returns the same data as the MCP tools but without loading 40 tool schemas into the subagent's context window.
+In subagents, always use the CLI: `nestweaver context UserService --token-budget 2000 --json`. The CLI returns the same data as the MCP tools but without loading 43 tool schemas into the subagent's context window.
 :::
 
 ## Tool filtering

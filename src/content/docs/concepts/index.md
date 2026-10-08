@@ -71,10 +71,10 @@ Alongside the main `.lbug` database, NestWeaver maintains several **sidecar file
 | -------------------- | ------------------------------------------------- |
 | `.pagerank.json`     | Cached global PageRank scores                     |
 | `.manifests.json`    | Parsed package manifests for workspace resolution |
-| `.git-activity.json` | File-level churn scores from git history          |
-| `.cochanges.json`    | Jaccard-scored co-change pairs from git history   |
+| `.gitactivity.json`  | File-level churn scores from git history          |
+| `.cochange.json`     | Jaccard-scored co-change pairs from git history   |
 | `.tantivy/`          | BM25 full-text search index (Tantivy)             |
-| `.embeddings/`       | Vector embeddings for semantic search             |
+| `.embeddings.bin`    | Vector embeddings for semantic search             |
 | `.interactions.json` | Agent interaction memory (opt-in)                 |
 
 Sidecar files are named relative to the database path (e.g., `brain.lbug.pagerank.json`) and are automatically loaded by the daemon on startup.

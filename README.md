@@ -52,7 +52,7 @@ Docs live in `src/content/docs/` as Markdown files organized by section:
 - **Getting Started** — Installation, Quick Start, Your First Query
 - **Core Concepts** — Graph architecture, token budgets, PageRank, daemon
 - **CLI Reference** — All CLI commands by category
-- **MCP Tools** — 40 tools documented with parameters and examples
+- **MCP Tools** — 43 tools documented with parameters and examples
 - **Configuration** — Instance config, language support, AI tool integrations
 - **Integrations** — Claude Code, OpenClaw, HermesAgent setup guides
 - **Guides** — Token efficiency, monorepo setup, brain/vault, CI integration

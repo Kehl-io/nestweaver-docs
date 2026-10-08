@@ -9,14 +9,14 @@ AI agents have limited context windows. Dumping entire files into a prompt waste
 
 ## How token budgets work
 
-Every context query accepts a `token_budget` parameter (default: 3000 tokens). NestWeaver ranks all symbols in the graph by relevance to your query, then greedily fills the budget from the top of the ranked list until adding the next symbol would exceed the limit.
+`brain_context` defaults `token_budget` to 2000. `project_context` defaults to a concise orientation of about 1000 tokens; `response_format: "detailed"` is about 3000. `nestweaver context` has no default budget until you pass `--token-budget`. NestWeaver ranks results and fills the budget from the top of that list.
 
 ```bash
 # Get context for a symbol within 2000 tokens
 nestweaver context "UserService" --token-budget 2000
 
-# Default budget is 3000 tokens
-nestweaver context "processPayment"
+# Code context around a symbol. A question belongs on `nestweaver investigate`.
+nestweaver context processPayment --token-budget 2000
 ```
 
 The budget controls the output size, not the computation. NestWeaver still ranks the entire relevant subgraph — it just truncates the response to fit your window.
@@ -47,7 +47,7 @@ weight_semantic = 0.35
 ```
 
 :::tip[Token efficiency]
-The three-signal fusion means you can query with natural language ("how does authentication work") and get structurally relevant results, not just keyword matches. This is especially useful when you don't know the exact symbol name.
+`nestweaver context` and `brain_context` resolve names, tags, titles, and UIDs. A question such as "how does authentication work" belongs on `nestweaver investigate`. File paths belong on `nestweaver context` / `code_context`, not on `brain_context`.
 :::
 
 ## Response formats
@@ -58,18 +58,18 @@ NestWeaver supports two response formats that trade detail for token efficiency:
 - **`"concise"`** — strips bodies to signatures and key lines, omits verbose metadata, typically **~60% fewer tokens** than detailed
 
 ```bash
-# Concise format for tight context windows
-nestweaver context "UserService" --format concise
+# Concise project orientation
+nestweaver project-context payments
 
-# Detailed format when you need full implementations
-nestweaver context "UserService" --format detailed
+# Detailed project orientation
+nestweaver project-context payments --detailed
 ```
 
 When using NestWeaver via MCP tools, set `response_format: "concise"` in the tool arguments. The concise format is strongly recommended for subagent and batch queries where token cost matters.
 
 ## Filtering
 
-Before ranking begins, you can narrow the candidate set using filters. Filtering happens before the graph walk, so it reduces computation as well as output:
+On `brain_context`, `repos` and `vaults` filter after the PageRank walk. A `tags` filter drops symbol nodes, because symbols carry no tags. These flags are on `nestweaver brain context`, not `nestweaver context`.
 
 | Filter         | Effect                                                                   |
 | -------------- | ------------------------------------------------------------------------ |
@@ -80,11 +80,7 @@ Before ranking begins, you can narrow the candidate set using filters. Filtering
 | `kinds`        | Filter by symbol kind (e.g., `function`, `class`, `interface`)           |
 
 ```bash
-# Context scoped to a specific repo and directory
-nestweaver context "checkout" --repos payments-api --path-prefix src/api/
-
-# MCP tool call with tag filtering
-nestweaver context "billing" --tags project/freeplay --format concise
+nestweaver brain context checkout --repos payments-api --path-prefix src/api/
 ```
 
 Filters are combinative — specifying multiple filters intersects them. This lets you efficiently target the exact subset of the graph relevant to your task.
@@ -94,7 +90,7 @@ Filters are combinative — specifying multiple filters intersects them. This le
 A typical context query for an agent working on a payment processing feature:
 
 ```bash
-nestweaver context "UserService" --token-budget 2000 --format concise
+nestweaver context UserService --token-budget 2000
 ```
 
 Representative output:

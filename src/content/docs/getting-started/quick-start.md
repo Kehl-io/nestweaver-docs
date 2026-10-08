@@ -5,7 +5,7 @@ sidebar:
   order: 2
 ---
 
-NestWeaver parses 32 languages via Tree-sitter — JS, TS, Go, Python, Rust, Java, C/C++, Lua, Scala, Elixir, Zig, Vue, Svelte, and more — and exposes 40 MCP tools for AI agents. Here's how to go from install to your first query.
+NestWeaver parses 32 languages via Tree-sitter — JS, TS, Go, Python, Rust, Java, C/C++, Lua, Scala, Elixir, Zig, Vue, Svelte, and more — and exposes 43 MCP tools for AI agents. Here's how to go from install to your first query.
 
 ## Set up your AI tools
 
@@ -69,5 +69,5 @@ This watches the filesystem and re-indexes on changes with debouncing, so your A
 ## Next steps
 
 - [Your First Query](/getting-started/first-query/) — a deeper walkthrough of querying the graph
-- [MCP Tools](/mcp-tools/) — the full list of 40 tools available to AI agents
+- [MCP Tools](/mcp-tools/) — the full list of 43 tools available to AI agents
 - [Configuration](/configuration/) — customize indexing, token budgets, and more

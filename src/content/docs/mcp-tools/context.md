@@ -7,6 +7,18 @@ sidebar:
 
 Context tools retrieve ranked, token-budgeted information from the knowledge graph. They are the primary entry point for understanding code and notes before reading source files.
 
+## code_context
+
+Code-only Personalized PageRank. It does not return notes, tags, or wikilinks. Use it for the symbols around a function or class. `brain_context` is the code-plus-notes walk.
+
+A seed may be a symbol name, a `sym:` UID, or a repo-relative file path. The engine expands a path to the symbols in that file. A question belongs on `investigate`.
+
+| Parameter | Type       | Required | Description                                                                                                                                                       |
+| --------- | ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `seeds`   | `string[]` | Yes      | Symbol names, `sym:` UIDs, or one repo-relative file path.                                                                                                        |
+| `limit`   | `integer`  | No       | Maximum connected symbols to return. Default 500. Maximum 5000. The response reports when it truncates.                                                           |
+| `intent`  | `string`   | No       | `find-definition`, `understand-architecture`, `analyze-impact`, `general-context`, or `project-context`, plus their short aliases. Omit for the standard damping. |
+
 ## brain_context
 
 Retrieve PPR-ranked structural context from the knowledge graph, seeded by symbol names, note titles, or keywords. Returns mixed-kind results (Symbol, Note, Section, Tag, Heading) within a token budget.
@@ -22,11 +34,11 @@ Use `brain_context` as the primary entry point for understanding a topic. Seed w
 | `vaults`                 | `string[]` | No       | Filter to specific vault UIDs or names (post-PPR).                                                                                                                                        |
 | `kinds`                  | `string[]` | No       | Include only nodes with these kind prefixes (e.g. `Symbol`, `Note`, `Section`). Case-insensitive prefix match.                                                                            |
 | `path_prefix`            | `string`   | No       | Include only nodes whose file path starts with this prefix.                                                                                                                               |
-| `tags`                   | `string[]` | No       | Include only nodes tagged with any of these tags. Symbol nodes are always kept.                                                                                                           |
+| `tags`                   | `string[]` | No       | Include only notes and sections with these tags. Symbol nodes have no tags and are dropped.                                                                                               |
 | `exclude_tags`           | `string[]` | No       | Exclude nodes tagged with any of these tags.                                                                                                                                              |
-| `weight_ppr`             | `number`   | No       | PPR ranking weight for hybrid RRF fusion. Default 0.7.                                                                                                                                    |
-| `weight_bm25`            | `number`   | No       | BM25 text search weight for hybrid RRF fusion. Default 0.3.                                                                                                                               |
-| `weight_semantic`        | `number`   | No       | Semantic embedding weight for hybrid RRF fusion. Default 0.0 (disabled until embeddings are generated).                                                                                   |
+| `weight_ppr`             | `number`   | No       | PPR ranking weight. Omitted calls use 0.40.                                                                                                                                               |
+| `weight_bm25`            | `number`   | No       | BM25 weight. Omitted calls use 0.25.                                                                                                                                                      |
+| `weight_semantic`        | `number`   | No       | Semantic weight. The stored default is 0.35. The semantic leg is skipped until `nestweaver embed` has written vectors.                                                                    |
 | `since`                  | `string`   | No       | ISO 8601 timestamp. Only return Note/Section nodes modified after this time. Symbol nodes always kept.                                                                                    |
 | `recency_weight`         | `number`   | No       | Multiplier for age-decay boost. 0 = disabled (default). 1.0 = same-day node ranks ~2x a year-old node.                                                                                    |
 | `recency_half_life_days` | `number`   | No       | Half-life for age-decay in days. Default 30.                                                                                                                                              |
@@ -66,7 +78,7 @@ Use when you know the project name. For ad-hoc topics, use `brain_context` with 
 | Parameter                | Type       | Required | Description                                                                                                                                    |
 | ------------------------ | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | `project`                | `string`   | Yes      | Project name (e.g. `"AuthService"`), alias, or UID.                                                                                            |
-| `token_budget`           | `integer`  | No       | Approximate token cap (chars / 4). Default 3000.                                                                                               |
+| `token_budget`           | `integer`  | No       | Approximate token cap. Omitted calls follow `response_format`: about 1000 for concise (the default) and about 3000 for detailed.               |
 | `kinds`                  | `string[]` | No       | Filter result kinds: `"Symbol"` for code, `"Note"` for documents. Case-insensitive prefix match.                                               |
 | `include_components`     | `boolean`  | No       | For composite projects, include content from component sub-projects. Default true.                                                             |
 | `since`                  | `string`   | No       | ISO 8601 timestamp. Only return Note/Section nodes modified after this time.                                                                   |

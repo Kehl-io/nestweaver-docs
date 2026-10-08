@@ -50,7 +50,7 @@ nestweaver context "UserService" --token-budget 8000
 You can also tune retrieval with `--intent` to weight different edge types:
 
 ```bash
-nestweaver context "UserService" --intent "understand how payments are processed"
+nestweaver context UserService --intent understand-architecture
 ```
 
 ## Search by keyword
@@ -80,7 +80,7 @@ This traces downstream through the dependency graph, scoring each affected symbo
 
 ## Query via MCP tools
 
-When working through an AI agent (Claude Code, Cursor, Codex, etc.), NestWeaver exposes 40 MCP tools that provide the same capabilities programmatically. After running `nestweaver setup`, your AI tool can call tools like:
+When working through an AI agent (Claude Code, Cursor, Codex, etc.), NestWeaver exposes 43 MCP tools that provide the same capabilities programmatically. After running `nestweaver setup`, your AI tool can call tools like:
 
 - **brain_context** — get task-focused context filtered by repo, tags, or path
 - **brain_search** — full-text search across code and notes
@@ -93,6 +93,6 @@ The MCP server runs as a background daemon, enabling concurrent access from mult
 
 ## Next steps
 
-- [MCP Tools](/mcp-tools/) — full reference for all 40 tools
+- [MCP Tools](/mcp-tools/) — full reference for all 43 tools
 - [Token Efficiency](/guides/token-efficiency/) — strategies for keeping context lean
 - [Configuration](/configuration/) — customize indexing behavior, edge weights, and more

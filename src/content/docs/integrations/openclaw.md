@@ -62,7 +62,7 @@ openclaw mcp probe nestweaver --json
 
 ## Tool filtering
 
-NestWeaver exposes 40 tools by default. To limit which tools OpenClaw sees:
+NestWeaver exposes 43 tools by default. To limit which tools OpenClaw sees:
 
 ```bash
 openclaw mcp tools nestweaver --include 'brain_context,brain_search,read_symbols,blast_radius,brain_impact'
