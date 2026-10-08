@@ -5,7 +5,20 @@ sidebar:
   order: 2
 ---
 
+import Steps from '../../../components/diagrams/Steps.astro';
+
 NestWeaver parses 32 languages via Tree-sitter — JS, TS, Go, Python, Rust, Java, C/C++, Lua, Scala, Elixir, Zig, Vue, Svelte, and more — and exposes 43 MCP tools for AI agents. Here's how to go from install to your first query.
+
+<Steps
+  label="First session"
+  caption="Each step reads or writes ./nestweaver.lbug. The UI shows the same neighborhood the context command returns."
+  steps={[
+    { title: 'setup', detail: 'Connect the editor you already use.' },
+    { title: 'index', detail: 'index --repo . parses the repo into the local graph.' },
+    { title: 'context', detail: 'Ask for one symbol and its neighbors.' },
+    { title: 'ui', detail: 'Open that neighborhood in the browser.' },
+  ]}
+/>
 
 ## Set up your AI tools
 

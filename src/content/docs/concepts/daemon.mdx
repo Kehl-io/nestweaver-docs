@@ -5,11 +5,27 @@ sidebar:
   order: 4
 ---
 
+import Flow from '../../../components/diagrams/Flow.astro';
+
 NestWeaver uses a background daemon process to own the database write lock, enabling multiple AI tools, CLI commands, and IDE integrations to query the same graph concurrently without lock contention. The daemon is the central coordination point — it handles writes, runs the filesystem watcher, generates embeddings, and serves all read queries through a gRPC interface.
 
 ## Why a daemon
 
 LadybugDB uses a **single-writer, multiple-reader** (SWMR) architecture. Only one process can hold the write lock at a time, but any number of readers can query concurrently. Without a daemon, each CLI invocation or MCP server would need to compete for the write lock, causing failures when multiple tools try to access the same database.
+
+<Flow
+  label="Clients talk to one daemon"
+  caption="The daemon holds the write lock. CLI commands, MCP, and the web UI read through it at the same time."
+  columns={[
+    [
+      { id: 'cli', title: 'CLI' },
+      { id: 'mcp', title: 'MCP' },
+      { id: 'ui', title: 'Web UI' },
+    ],
+    [{ id: 'daemon', title: 'Daemon', detail: 'writes, watch, gRPC', accent: true }],
+    [{ id: 'db', title: 'LadybugDB', detail: 'one .lbug file' }],
+  ]}
+/>
 
 The daemon solves this by:
 

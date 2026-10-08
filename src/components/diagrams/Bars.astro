@@ -1,0 +1,40 @@
+---
+interface Bar {
+  name: string;
+  weight: number;
+  note: string;
+}
+
+interface Props {
+  label: string;
+  caption: string;
+  bars: Bar[];
+}
+
+const { label, caption, bars } = Astro.props;
+const titleId = `nw-${label
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-|-$/g, '')}`;
+---
+
+<figure class="nw-figure">
+  <div class="nw-bars" role="img" aria-labelledby={titleId}>
+    <p id={titleId} class="nw-sr">{label}</p>
+    {
+      bars.map((bar) => (
+        <div class="nw-bar">
+          <div class="nw-bar-meta">
+            <strong>{bar.name}</strong>
+            <span>{bar.weight.toFixed(2)}</span>
+          </div>
+          <div class="nw-bar-track" aria-hidden="true">
+            <div class="nw-bar-fill" style={`width: ${bar.weight * 100}%`} />
+          </div>
+          <p>{bar.note}</p>
+        </div>
+      ))
+    }
+  </div>
+  <figcaption>{caption}</figcaption>
+</figure>

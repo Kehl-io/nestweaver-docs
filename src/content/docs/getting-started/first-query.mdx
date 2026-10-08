@@ -5,6 +5,8 @@ sidebar:
   order: 3
 ---
 
+import Neighborhood from '../../../components/diagrams/Neighborhood.astro';
+
 This guide walks through indexing a repository and querying it with NestWeaver's CLI. By the end you'll know how to look up symbols, control token budgets, search by keyword, and check impact before making changes.
 
 ## Index a repository
@@ -27,6 +29,12 @@ nestweaver context "UserService" --token-budget 2000
 ```
 
 This returns a focused context window: the symbol itself, its call graph, and the surrounding symbols most relevant to understanding it — all within 2000 tokens.
+
+<Neighborhood
+  label="What a context query gathers around a symbol"
+  caption="context ranks this neighborhood and stops when the token budget is full. You still open a file when you need the body."
+  seed="UserService"
+/>
 
 :::tip[Token efficiency]
 Always set a `--token-budget` to control how much context NestWeaver returns. Smaller budgets give tighter, more relevant results. Start with `--token-budget 2000` and increase if you need more breadth.

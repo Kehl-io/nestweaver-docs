@@ -5,6 +5,8 @@ sidebar:
   order: 1
 ---
 
+import Steps from '../../../components/diagrams/Steps.astro';
+
 Input tokens are 85-95% of AI coding bills. NestWeaver's graph-based retrieval is designed to minimize token spend — but how you query matters. This guide covers the strategies that make the biggest difference.
 
 ## The core principle
@@ -12,6 +14,17 @@ Input tokens are 85-95% of AI coding bills. NestWeaver's graph-based retrieval i
 NestWeaver gives your agent precomputed answers instead of raw files. But even within NestWeaver, there's a spectrum from "broad and expensive" to "narrow and cheap."
 
 **Rule of thumb:** Filter early, use concise format for scanning, and switch to detailed only for the results you need to read deeply.
+
+<Steps
+  label="Spend tokens from wide to narrow"
+  caption="In a subagent or a script, run the same steps with the CLI. The answer is the same, without the MCP tool schemas."
+  steps={[
+    { title: 'Name the seed', detail: 'A symbol, file, or project. Not the whole tree.' },
+    { title: 'Filter', detail: 'Repo, path, or kind, before the ranking.' },
+    { title: 'Scan concise', detail: 'Signatures and neighbors only.' },
+    { title: 'Open one', detail: 'Detailed, or the source span, for what you will change.' },
+  ]}
+/>
 
 ## MCP vs CLI: choose by context
 

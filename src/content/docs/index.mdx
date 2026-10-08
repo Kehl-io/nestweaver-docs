@@ -16,14 +16,40 @@ hero:
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
+import Flow from '../../components/diagrams/Flow.astro';
+import Tiles from '../../components/diagrams/Tiles.astro';
 
 An agent that starts from the file tree reads until the context window is full, and still may not have the caller, the type, or the test. Search finds the string. It does not say what reaches this function, or what a diff puts at risk.
 
 NestWeaver parses the repository once into symbols, calls, and imports, and answers from that graph. The answer is a short, ranked neighborhood — the same one you can open in the browser — instead of a pile of files.
 
+<Flow
+  label="From a repository to the three ways you ask"
+  caption="Index once. The CLI, your editor, and the web UI read the same database file."
+  columns={[
+    [{ id: 'repo', title: 'Repository', detail: 'source and notes' }],
+    [{ id: 'index', title: 'Index', detail: 'symbols and edges' }],
+    [{ id: 'db', title: 'nestweaver.lbug', detail: 'on your machine', accent: true }],
+    [
+      { id: 'cli', title: 'CLI', detail: 'context, impact' },
+      { id: 'mcp', title: 'Editor', detail: '43 MCP tools' },
+      { id: 'ui', title: 'Web UI', detail: 'port 3000' },
+    ],
+  ]}
+/>
+
 ![NestWeaver web UI overview: files on the left, the graph in the center, details on the right](/images/web-ui.png)
 
-The overview above is a small sample project. The center is the graph. The right-hand panel is empty until you select a symbol. The green chip says the view is local and current.
+<Tiles
+  label="The three panels in the overview"
+  tiles={[
+    { title: 'Left', detail: 'Files, symbols, and notes in the current scope.' },
+    { title: 'Center', detail: 'The graph for the task you picked.', accent: true },
+    { title: 'Right', detail: 'Empty until you select a symbol.' },
+  ]}
+/>
+
+The screenshot is a small sample project. Start Here, in the center, summarizes what is indexed. The green chip says the view is local and current.
 
 <CardGrid stagger>
   <Card title="Query the graph" icon="magnifier">

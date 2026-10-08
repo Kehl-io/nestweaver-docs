@@ -1,0 +1,29 @@
+---
+interface Step {
+  title: string;
+  detail: string;
+}
+
+interface Props {
+  label: string;
+  caption?: string;
+  steps: Step[];
+}
+
+const { label, caption, steps } = Astro.props;
+---
+
+<figure class="nw-figure">
+  <ol class="nw-steps" aria-label={label}>
+    {
+      steps.map((step, index) => (
+        <li>
+          <span class="nw-step-num">{index + 1}</span>
+          <strong class="nw-step-title">{step.title}</strong>
+          <span>{step.detail}</span>
+        </li>
+      ))
+    }
+  </ol>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

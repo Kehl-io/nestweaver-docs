@@ -5,6 +5,8 @@ sidebar:
   order: 2
 ---
 
+import Bars from '../../../components/diagrams/Bars.astro';
+
 AI agents have limited context windows. Dumping entire files into a prompt wastes tokens on imports, boilerplate, and irrelevant code — leaving less room for the symbols that actually matter to the task. NestWeaver solves this by letting callers specify a token budget, then filling that budget with the highest-ranked, most task-relevant code from the graph.
 
 ## How token budgets work
@@ -30,6 +32,16 @@ Ranking is not based on a single metric. NestWeaver fuses three independent retr
 | **Personalized PageRank** | 0.40           | Structural importance relative to the query seeds — follows call chains, imports, and type relationships through the graph                              |
 | **BM25**                  | 0.25           | Text match — keyword relevance using the Tantivy full-text index with pseudo-relevance feedback expansion                                               |
 | **Semantic similarity**   | 0.35           | Embedding-based similarity — natural language queries matched against symbol and note embeddings (local BERT model, Metal-accelerated on Apple Silicon) |
+
+<Bars
+  label="The three signals in a context score"
+  caption="Semantic similarity is omitted until embeddings exist. The token budget then keeps the top of this ranking and drops the rest."
+  bars={[
+    { name: 'Personalized PageRank', weight: 0.4, note: 'Structure around the seed.' },
+    { name: 'Semantic similarity', weight: 0.35, note: 'Only after embeddings exist.' },
+    { name: 'BM25', weight: 0.25, note: 'Text match in the search index.' },
+  ]}
+/>
 
 The combined score for each symbol is:
 

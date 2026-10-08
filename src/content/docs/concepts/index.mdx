@@ -5,9 +5,23 @@ sidebar:
   order: 1
 ---
 
+import Bars from '../../../components/diagrams/Bars.astro';
+import Flow from '../../../components/diagrams/Flow.astro';
+
 NestWeaver parses your source code into a persistent knowledge graph where nodes are symbols (functions, classes, types, fields) and edges are structural relationships (calls, imports, type usage, field access). This graph persists across sessions, updates incrementally, and lets AI agents query your codebase without reading raw source files.
 
 This page explains how that graph gets built, what it contains, and how it stays current.
+
+<Flow
+  label="How a repository becomes a graph"
+  caption="Only files whose bytes changed are parsed again. BLAKE3 hashes decide which files those are."
+  columns={[
+    [{ id: 'source', title: 'Source', detail: 'code and markdown' }],
+    [{ id: 'symbols', title: 'Symbols', detail: 'Tree-sitter' }],
+    [{ id: 'edges', title: 'Edges', detail: 'the resolver' }],
+    [{ id: 'db', title: '.lbug', detail: 'plus sidecars', accent: true }],
+  ]}
+/>
 
 ## Parsing
 
@@ -55,6 +69,19 @@ Every edge in the graph has a type and a base weight that reflects coupling stre
 | `USES`                   | 0.5         | Type reference — real but weaker coupling            |
 | `ACCESSES`               | 0.4         | Field/property access — medium coupling              |
 | `MEMBER_OF` / `INCLUDES` | 0.2         | Structural containment (class member, module member) |
+
+<Bars
+  label="How strongly each relationship carries a query"
+  caption="A call moves more of a query than a field access. PageRank uses these weights when it walks outward from a seed."
+  bars={[
+    { name: 'Calls', weight: 1, note: 'A function invokes another.' },
+    { name: 'Extends or implements', weight: 0.9, note: 'Inheritance and interfaces.' },
+    { name: 'Imports', weight: 0.7, note: 'A dependency, without the call.' },
+    { name: 'Uses a type', weight: 0.5, note: 'A type reference.' },
+    { name: 'Accesses a field', weight: 0.4, note: 'A property read or write.' },
+    { name: 'Contains', weight: 0.2, note: 'A member of a class or module.' },
+  ]}
+/>
 
 These weights feed directly into the [Personalized PageRank](/concepts/pagerank/) algorithm. When you query for context around a symbol, edges with higher weights propagate more relevance. An intent system layers multipliers on top of base weights to tune retrieval for different query types.
 
