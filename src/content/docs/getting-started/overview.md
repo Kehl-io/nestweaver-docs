@@ -5,7 +5,9 @@ sidebar:
   order: 0
 ---
 
-NestWeaver reads a repository, builds a graph of symbols and how they connect, and answers from that graph. The database is a file on your machine, `./nestweaver.lbug` by default when you index the repo you are standing in.
+Reading the repository is the slow way to answer a structural question. An agent opens files until the window fills, and a text search returns every place a name appears. Neither one tells you which of those places matter: who calls this, what it calls, which type it belongs to, or which tests sit downstream of a change.
+
+NestWeaver indexes the repository into that structure and keeps it in a file on your machine, `./nestweaver.lbug` by default. Later questions hit the graph. The result is small enough to read, and the same neighborhood is what an agent receives and what the web UI draws. You still open a file when you need the body. You do not open the tree to find out which file.
 
 You use it three ways. They read the same database.
 
