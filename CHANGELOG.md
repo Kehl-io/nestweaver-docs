@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/Kehl-io/nestweaver-docs/compare/v0.2.1...v0.2.2) (2026-10-08)
+
+
+### Bug Fixes
+
+* correct install, CI, and MCP reference ([#10](https://github.com/Kehl-io/nestweaver-docs/issues/10)) ([55979e3](https://github.com/Kehl-io/nestweaver-docs/commit/55979e3fb2f45015fa015bc0c685784d9595d1af))
+
 ## [0.2.1](https://github.com/Kehl-io/nestweaver-docs/compare/v0.2.0...v0.2.1) (2026-09-02)
 
 
