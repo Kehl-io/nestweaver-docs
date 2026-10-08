@@ -49,27 +49,25 @@ Different queries benefit from different edge-weight profiles. The `--intent` fl
 # Default: balanced weights
 nestweaver context "UserService"
 
-# Intent-tuned: emphasize call chains for debugging
-nestweaver context "UserService" --intent debug
+# Emphasize the call chain
+nestweaver context UserService --intent analyze-impact
 
-# Intent-tuned: emphasize type relationships for refactoring
-nestweaver context "UserService" --intent refactor
+# Broaden to structural neighbors
+nestweaver context UserService --intent understand-architecture
 ```
 
-Intent detection can also be automatic — NestWeaver analyzes the query text to infer whether you're debugging, exploring, refactoring, or investigating impact, and adjusts the edge multipliers accordingly.
-
-The intent system applies a multiplier to specific edge types. For example, a "debug" intent might boost `CALLS` edges with a 1.5x multiplier while keeping other edge types at 1.0x. The final edge weight is `base_weight * intent_multiplier`.
+Accepted spellings are `find-definition` (`definition`, `find`), `understand-architecture` (`architecture`, `arch`), `analyze-impact` (`impact`, `blast-radius`), `general-context` (`general`, `context`), and `project-context` (`project`). Anything else is rejected. NestWeaver does not infer an intent from free text.
 
 ## Interaction memory
 
 With `--track-interactions` enabled, NestWeaver learns from agent query patterns over time. Each time a symbol appears in a context query result, its interaction score increases. These scores are then blended into the PPR personalization vector at a conservative 5% weight.
 
 ```bash
-# Enable interaction tracking
-nestweaver context "processPayment" --track-interactions
+# Record interaction telemetry on the MCP server
+nestweaver mcp --track-interactions
 
 # View interaction statistics
-nestweaver interactions list
+nestweaver interactions status
 ```
 
 The interaction memory uses an **exploration floor** to prevent feedback loops. Every seed's personalization weight is scaled by `(1 - 0.05)`, with only the remaining 5% redistributed according to interaction history. This means a newly-seeded, never-before-accessed node always retains 95% of its original personalization mass — it can never be driven to zero by historical popularity.

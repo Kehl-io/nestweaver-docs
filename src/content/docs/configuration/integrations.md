@@ -35,7 +35,7 @@ NestWeaver integrates with 16 AI coding tools through a single `nestweaver setup
 nestweaver setup
 
 # Configure a specific tool only
-nestweaver setup --tool claude-code
+nestweaver setup claude-code
 
 # Force-regenerate customized files (skill, cursor rules, etc.)
 nestweaver setup --force
@@ -63,7 +63,7 @@ For most tools, setup writes a single MCP server entry into the tool's config fi
 - A **skill file** at `.claude/skills/nestweaver/SKILL.md` that teaches Claude Code how to use NestWeaver's tools effectively
 - **Hooks** in `.claude/settings.json` — a `SessionStart` hook that prints brain status so the agent knows the graph is available, and a `PreToolUse` hook on Bash that suggests graph alternatives when the agent falls back to grep/find
 
-**Cursor** gets lite mode by default (6 core tools instead of 40) to stay within Cursor's tool limits, plus an agent rules file at `.cursor/rules/nestweaver.mdc`.
+**Cursor** gets lite mode by default (6 core tools instead of 43) to stay within Cursor's tool limits, plus an agent rules file at `.cursor/rules/nestweaver.mdc`.
 
 **Codex** gets an `AGENTS.md` codebase guide alongside the MCP config in `.codex/config.toml`.
 
@@ -103,7 +103,7 @@ repo-map: nestweaver mcp --db /absolute/path/to/nestweaver.lbug
 
 ## Lite mode
 
-Cursor and other tools with low tool-count limits can use lite mode, which exposes 6 core tools instead of the full 40:
+Cursor and other tools with low tool-count limits can use lite mode, which exposes 6 core tools instead of the full 43:
 
 ```sh
 nestweaver mcp --lite --db ./nestweaver.lbug
@@ -119,7 +119,7 @@ For fine-grained control, pass `--tools` with a comma-separated list to expose o
 nestweaver mcp --tools brain_context,read_symbols,blast_radius --db ./nestweaver.lbug
 ```
 
-This is useful when you want more than lite mode's 6 tools but fewer than the full 40, or when you want to tailor the available tools to a specific workflow.
+This is useful when you want more than lite mode's 6 tools but fewer than the full 43, or when you want to tailor the available tools to a specific workflow.
 
 ## Detection
 
@@ -144,4 +144,4 @@ Setup auto-detects tools by checking for their config directories and binaries:
 | Devin          | `devin.json` or `devin` binary in PATH                                                |
 | Hermes         | `.hermes/` directory or `hermes` binary in PATH                                       |
 
-Use `--force` to configure all 16 tools regardless of detection, which is useful when setting up a shared repository before other team members have installed their tools.
+Use `--all` to configure all 16 tools regardless of detection. `--force` overwrites customized skill and guide files. The tool name is positional: `nestweaver setup claude-code`.

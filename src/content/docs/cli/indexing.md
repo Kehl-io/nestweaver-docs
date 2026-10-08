@@ -12,7 +12,7 @@ Indexing is the first step to building your knowledge graph. NestWeaver parses s
 | Command       | Description                                            | Key Flags                                                                                   |
 | ------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
 | `index`       | Parse and index a repository                           | `--repo`, `--name`, `--db`, `--force`, `--with-trigrams`, `--with-git-activity`, `--config` |
-| `watch`       | Live re-indexing via filesystem watcher                | `--repo`, `--db`, `--instance`, `--config`, `--refresh-wiki-hours`                          |
+| `watch`       | Live re-indexing via filesystem watcher                | positional repo path, `--db`, `--instance`, `--config`, `--refresh-wiki-hours`              |
 | `list-repos`  | List all indexed repositories                          | `--instance`, `--json`, `--db`, `--config`                                                  |
 | `remove-repo` | Remove a repo and all its data from the graph          | `--db`                                                                                      |
 | `prune-stale` | Remove repos/vaults whose source paths no longer exist | `--db`                                                                                      |
@@ -49,7 +49,7 @@ Use `--name` to avoid basename collisions when multiple repos share generic name
 nestweaver watch
 
 # Watch a specific repo
-nestweaver watch --repo ./my-project
+nestweaver watch ./my-project
 ```
 
 The watcher monitors for creates, modifies, and deletes of supported source files. Changes are debounced into 2-second windows, and each batch triggers an incremental re-index. This keeps the graph current as you code without manual re-runs. Press Ctrl-C to stop cleanly.

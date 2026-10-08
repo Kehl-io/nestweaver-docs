@@ -19,12 +19,12 @@ nestweaver --version
 
 ## Cargo
 
-If you already have Rust 1.85+ installed:
+There is no published crates.io package. From a source checkout, fetch the pinned Ladybug sources and install the local crate:
 
 ```bash
-cargo install nestweaver
+eval "$(scripts/fetch-lbug-source.sh)"
+cargo install --locked --path .
 nestweaver --version
-# Expected: nestweaver X.Y.Z
 ```
 
 ## Pre-built binaries
@@ -61,7 +61,7 @@ nestweaver --version
 # Expected: nestweaver X.Y.Z
 ```
 
-Run `nestweaver --help` to see the full command list. All commands support `--json` for machine-readable output.
+Run `nestweaver --help` to see the full command list. `--json` is per command, not a global flag.
 
 ## Next steps
 

@@ -5,7 +5,7 @@ sidebar:
   order: 4
 ---
 
-HermesAgent is a self-improving, model-agnostic coding agent by Nous Research. It supports MCP natively — its client auto-discovers NestWeaver's 40 tools at startup and registers them in the agent's tool registry.
+HermesAgent is a self-improving, model-agnostic coding agent by Nous Research. It supports MCP natively — its client auto-discovers NestWeaver's 43 tools at startup and registers them in the agent's tool registry.
 
 ## Setup
 
@@ -66,7 +66,7 @@ For example:
 | `blast_radius`  | `mcp_nestweaver_blast_radius`  |
 | `flow_trace`    | `mcp_nestweaver_flow_trace`    |
 
-All 40 tools follow this pattern. The agent calls them by their prefixed name — no manual mapping needed.
+All 43 tools follow this pattern. The agent calls them by their prefixed name — no manual mapping needed.
 
 ## Tool filtering
 

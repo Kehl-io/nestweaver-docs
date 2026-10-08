@@ -55,17 +55,12 @@ Every context and search tool supports `response_format`:
 
 ## Control the token budget
 
-The `token_budget` parameter (default: 3000) controls how much context NestWeaver returns. The graph fills the budget with the highest-ranked symbols — Personalized PageRank ensures the most structurally relevant results come first.
+`brain_context` defaults `token_budget` to 2000. Pass a symbol name. A phrase such as "payment processing" is a question for `nestweaver investigate`.
 
 ```bash
-# Tight — just the entry points
-nestweaver context "payment processing" --token-budget 1000
-
-# Standard — good for most tasks
-nestweaver context "payment processing" --token-budget 3000
-
-# Generous — deep architectural understanding
-nestweaver context "payment processing" --token-budget 8000
+nestweaver context processPayment --token-budget 1000
+nestweaver context processPayment --token-budget 2000
+nestweaver investigate "payment processing"
 ```
 
 ## Choose the right tool

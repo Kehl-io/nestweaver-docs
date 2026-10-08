@@ -62,25 +62,9 @@ The daemon is more than a database proxy. It hosts several background subsystems
 
 The daemon maintains two `GraphStore` handles: a read-write handle for mutations and a separate read-only handle for all read queries, ensuring that write operations don't block concurrent reads.
 
-## CI and testing mode
+## CI
 
-In environments where a long-running daemon is inappropriate (CI pipelines, one-shot scripts, testing), you can bypass the daemon entirely:
-
-```bash
-# Direct database access — no daemon needed
-nestweaver context "UserService" --no-daemon
-
-# Or via environment variable
-NESTWEAVER_NO_DAEMON=1 nestweaver context "UserService"
-```
-
-In `--no-daemon` mode, the CLI opens the database directly in the current process. This works for read-only queries but has limitations:
-
-- **No concurrent writes** — if another process holds the write lock, the command will fail
-- **No background tasks** — no filesystem watcher, no embedding generation
-- **WAL considerations** — concurrent access without the daemon's coordination can lead to stale reads
-
-Use `--no-daemon` for CI jobs and scripted analysis where only one process accesses the database at a time.
+Published commands route through the daemon, including in CI. `--no-daemon` exists only so unpublished CI tests can open a database directly. Do not pass it, and do not set `NESTWEAVER_NO_DAEMON`. On a published binary the flag is ignored.
 
 ## macOS app
 
@@ -98,7 +82,6 @@ On macOS, the recommended way to run NestWeaver is the native `.app` bundle. It 
 cd app && bash build.sh
 open target/release/NestWeaver.app
 
-# Or download from GitHub Releases
 ```
 
 On Linux and headless macOS environments, use `nestweaver daemon start` or let auto-start handle it.
@@ -112,10 +95,10 @@ The daemon loads and manages several sidecar files stored alongside the main `.l
 | `*.lbug`              | Main LadybugDB database (graph nodes and edges)   |
 | `*.pagerank.json`     | Cached global PageRank scores                     |
 | `*.manifests.json`    | Parsed package manifests for workspace resolution |
-| `*.git-activity.json` | File-level churn scores from git history          |
-| `*.cochanges.json`    | Co-change file pairs with Jaccard scores          |
+| `*.gitactivity.json`  | File-level churn scores from git history          |
+| `*.cochange.json`     | Co-change file pairs with Jaccard scores          |
 | `*.tantivy/`          | BM25 full-text search index directory             |
-| `*.embeddings/`       | Vector embedding files for semantic search        |
+| `*.embeddings.bin`    | Vector embeddings for semantic search             |
 | `*.interactions.json` | Agent interaction memory (opt-in)                 |
 
 Sidecar files are loaded on daemon startup and updated as background tasks complete. They can be safely deleted — the daemon will regenerate them on next startup (though this may take time for large codebases).

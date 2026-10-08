@@ -18,19 +18,18 @@ These flags work on every command.
 | `--verbose`   | `-v`  | Show additional detail (e.g. UIDs)                                             |
 | `--no-color`  |       | Disable colored output                                                         |
 | `--plain`     |       | Alias for `--no-color`                                                         |
-| `--no-embed`  |       | Disable semantic embedding for this invocation                                 |
-| `--db <path>` |       | Path to the database file (env: `NESTWEAVER_DB`, default: `./nestweaver.lbug`) |
 
 ## Exit codes
 
-| Code | Meaning                      |
-| ---- | ---------------------------- |
-| 0    | Success                      |
-| 1    | Error                        |
-| 2    | Not found                    |
-| 3    | Ambiguous (multiple matches) |
-| 4    | Unauthorized                 |
-| 5    | Unavailable                  |
+| Code | Meaning |
+| ---- | ------- |
+| 0    | Success |
+| 1    | The command failed |
+| 2    | Target not found. Also: `stale-check` found drift, `pr-impact --strict` blocked, or `dead-code` refused |
+| 3    | Ambiguous match |
+| 4    | Unauthorized (`pull` only) |
+| 5    | Unavailable (`pull` only) |
+| 64   | Usage error (unknown flag, bad value) |
 
 ## Command groups
 
@@ -42,7 +41,7 @@ These flags work on every command.
 
 ## Output formats
 
-All commands support `--json` for machine-readable output. Human-readable table output is the default when stdout is a terminal.
+`--json` and `--no-embed` exist only on commands that declare them. `--db` is also per command (env: `NESTWEAVER_DB`, default `./nestweaver.lbug`). Human-readable output is the default when stdout is a terminal.
 
 ## Getting help
 

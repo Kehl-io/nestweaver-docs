@@ -51,7 +51,7 @@ nestweaver pr-impact --files src/auth.rs,src/db.rs
 nestweaver pr-impact --depth 5 --json
 ```
 
-`pr-impact` maps changed files to their symbols, runs transitive impact analysis, groups results by cluster, and assigns a risk level: **Low**, **Medium**, **High**, or **Critical**. When no `--files` are given, it uses `git diff --name-only` to detect changes automatically.
+`pr-impact` maps changed files to their symbols, runs transitive impact analysis, groups results by cluster, and assigns **Low**, **Medium**, **High**, or **Unknown**. `Unknown` means the change was not assessed. When no `--files` are given, it uses `git diff --name-only` against the working tree.
 
 ## Test selection
 
@@ -80,17 +80,17 @@ nestweaver dead-code --min-confidence high --json
 ## Graph topology
 
 ```bash
-# Find hub nodes (highest degree centrality + PageRank)
+# Find hub nodes (ranked by total degree: incoming plus outgoing)
 nestweaver hubs --top 20
 
 # Find bridge/chokepoint nodes (highest betweenness centrality)
 nestweaver bridges --top 20
 
-# Detect community clusters (Leiden algorithm)
+# Detect community clusters (Louvain-style local moving)
 nestweaver clusters --resolution 0.5 --json
 ```
 
-Hubs are central abstractions many parts of the codebase depend on. Bridges are architectural chokepoints — many shortest paths pass through them, so changing a bridge has outsized blast radius. Clusters use Leiden community detection; results are cached in a sidecar file.
+Hubs are central abstractions many parts of the codebase depend on. Bridges are architectural chokepoints — many shortest paths pass through them, so changing a bridge has outsized blast radius. Clusters use Louvain-style local moving, not the full Leiden algorithm. Results are cached in a sidecar file. Hubs are ranked by total degree. PageRank is extra metadata, not the sort key.
 
 ## Graph export
 

@@ -1,54 +1,74 @@
 ---
 title: Instance Config
-description: Configure NestWeaver with nestweaver-instance.toml — repos, cross-references, projects, and feature bundles.
+description: Configure NestWeaver with nestweaver-instance.toml — repos, vaults, links, and feature bundles.
 sidebar:
   order: 1
 ---
 
-NestWeaver's behavior is configured via `nestweaver-instance.toml`, which lives alongside the `.lbug` database file. This page covers the most common configuration options.
+An instance config names the repos NestWeaver indexes, how they relate, and where snapshots and workspace checkouts live. `nestweaver index` and `nestweaver setup` do not create this file.
 
-## Location
+NestWeaver looks for it beside the repo as `.nestweaver/instance.toml`, `nestweaver-instance.toml`, or `instance.toml`. Pass `--config` when the file lives somewhere else. With neither `--instance` nor a config, commands use the instance id `default`.
 
-The instance config is created automatically when you run `nestweaver index` or `nestweaver setup`. By default, it lives at:
+The canonical minimal file in the NestWeaver repo is `examples/minimal-instance.toml`. Validate a copy before using it:
 
-```
-~/.local/share/nestweaver/<instance-name>/nestweaver-instance.toml
+```sh
+cp examples/minimal-instance.toml nestweaver-instance.toml
+nestweaver config validate nestweaver-instance.toml
 ```
 
 ## Minimal example
 
+`InstanceConfig` rejects unknown fields. These five settings are required:
+
 ```toml
-[instance]
-name = "my-project"
+instance_id = "my-project"
 
-[[repos]]
-path = "/path/to/my-repo"
+[snapshot_storage]
+backend = "local"
+path = "~/.local/share/nestweaver/my-project/snapshots"
 
-[[repos]]
-path = "/path/to/another-repo"
+[workspace]
+backend = "local"
+path = "~/.local/share/nestweaver/my-project/workspace"
+
+[inference]
+endpoint = "http://localhost:11434"
+embedding_model = "nomic-embed-text"
+summary_model = "qwen2.5-coder:7b"
+
+[git]
+credential_method = "gh"
 ```
 
-## Adding a knowledge vault
+## Repos and vaults
 
-Link an Obsidian vault or markdown directory to the code graph:
+A repo entry needs `url`, not `path`. A markdown vault is the same table with `type = "vault"`.
 
 ```toml
-[[brains]]
-path = "/path/to/my-vault"
+[[repos]]
+url = "https://github.com/example/frontend"
+name = "frontend"
+
+[[repos]]
+url = "https://github.com/example/notes"
 name = "project-notes"
+type = "vault"
 ```
 
-## Cross-repo references
+Indexing a checkout you already have is still `nestweaver index --repo ./frontend`. The `url` in config is the declared identity, not a substitute for `--repo`.
 
-Define how repos reference each other (npm packages, imports, APIs):
+## Cross-repo links
+
+Links use `type`, not `kind`.
 
 ```toml
 [[links]]
 from = "frontend"
 to = "api-client"
-kind = "npm"
+type = "http-api"
+description = "Frontend calls the API client"
 ```
 
 ## Full reference
 
-See the annotated example config in the [NestWeaver repo](https://github.com/Kehl-io/nestweaver/tree/main/examples) for all available options including projects, feature bundles, embedding config, and MCP server settings.
+The annotated guide in the NestWeaver repo is `docs/guide/instance-config.md`. It covers projects, feature bundles, embedding weights, and MCP server settings.

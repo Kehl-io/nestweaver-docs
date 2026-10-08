@@ -84,11 +84,11 @@ Default allowlist excludes `Projects.md`, `index.md`, `README.md`, and MOC-conta
 
 ## brain_topic_clusters
 
-Discover thematic structure of a vault by running Leiden community detection over the note-to-note wikilink graph.
+Discover thematic structure of a vault by running Louvain-style local moving community detection over the note-to-note wikilink graph.
 
 | Parameter    | Type      | Required | Description                                                             |
 | ------------ | --------- | -------- | ----------------------------------------------------------------------- |
-| `resolution` | `number`  | No       | Leiden resolution -- higher yields more, smaller clusters. Default 0.5. |
+| `resolution` | `number`  | No       | Resolution. Higher yields more, smaller clusters. Default 0.5. |
 | `limit`      | `integer` | No       | Max clusters to return (default 50). Total count is always reported.    |
 
 Each cluster is labelled by its most central member (highest PageRank).

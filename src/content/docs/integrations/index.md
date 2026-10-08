@@ -61,7 +61,7 @@ The exact config format varies by tool — see the individual integration guides
 
 ## Tool filtering
 
-NestWeaver exposes 40 MCP tools by default. If your tool has limited tool slots or you want a focused set:
+NestWeaver exposes 43 MCP tools by default. If your tool has limited tool slots or you want a focused set:
 
 **Lite mode** — 6 core tools:
 

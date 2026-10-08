@@ -38,7 +38,7 @@ Brain commands connect Obsidian vaults and markdown directories to the code know
 | ---------------------- | ---------------------------------------------------- | ---------------------------------------------------------- |
 | `brain broken-links`   | List wikilinks with ambiguous/low-confidence targets | `--max-suggestions`, `--limit`, `--json`                   |
 | `brain orphans`        | List notes with zero inbound and outbound wikilinks  | `--vault`, `--path-prefix`, `--allow`, `--limit`, `--json` |
-| `brain topic-clusters` | Detect topic clusters via Leiden community detection | `--resolution`, `--limit`, `--json`                        |
+| `brain topic-clusters` | Detect topic clusters via Louvain-style local moving | `--resolution`, `--limit`, `--json`                        |
 | `brain tag-graph`      | Show tag note count and co-occurring tags            | `--limit`, `--json`                                        |
 | `brain doc-stats`      | One-shot health summary                              | `--top-tags-limit`, `--json`                               |
 
