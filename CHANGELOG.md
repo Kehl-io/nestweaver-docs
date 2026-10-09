@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/Kehl-io/nestweaver-docs/compare/v0.5.0...v0.6.0) (2026-10-09)
+
+
+### Features
+
+* link the npm package from the docs ([#18](https://github.com/Kehl-io/nestweaver-docs/issues/18)) ([bd046d7](https://github.com/Kehl-io/nestweaver-docs/commit/bd046d7cded216b3dbf3d9dd7b684c2c3c260073))
+
 ## [0.5.0](https://github.com/Kehl-io/nestweaver-docs/compare/v0.4.0...v0.5.0) (2026-10-08)
 
 
