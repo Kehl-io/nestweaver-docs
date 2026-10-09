@@ -17,6 +17,8 @@ nestweaver --version
 # Expected: nestweaver X.Y.Z
 ```
 
+The package is [nestweaver on npm](https://www.npmjs.com/package/nestweaver).
+
 ## Cargo
 
 There is no published crates.io package. From a source checkout, fetch the pinned Ladybug sources and install the local crate:
