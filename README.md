@@ -65,6 +65,8 @@ Automated via GitHub Actions:
 - Merging a version tag triggers a Cloudflare Pages deploy.
 - PRs get preview deploys with unique URLs.
 
+See [analytics setup and release verification](docs/analytics.md) before a production release.
+
 ## Links
 
 - **Live site:** https://docs.nestweaver.kehl.io
