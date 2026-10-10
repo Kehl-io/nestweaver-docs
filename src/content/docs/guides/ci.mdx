@@ -37,7 +37,7 @@ Release archives are named `nestweaver-<tag>-<target>.tar.gz`, with a matching `
 ```yaml
 - name: Install NestWeaver
   run: |
-    tag="v12.0.0"
+    tag="v12.0.1"
     target="x86_64-unknown-linux-gnu"
     file="nestweaver-${tag}-${target}.tar.gz"
     curl -fsSL -o "$file" "https://github.com/Kehl-io/nestweaver/releases/download/${tag}/${file}"
@@ -47,7 +47,7 @@ Release archives are named `nestweaver-<tag>-<target>.tar.gz`, with a matching `
     sudo mv nestweaver /usr/local/bin/
 ```
 
-Use the tag of the release you intend to run. `cargo install nestweaver` is not a published crates.io package.
+Use the tag of the release you intend to run. `12.0.1` does not change the resolver generation, so a database indexed with `12.0.0` does not need `--force` for this patch. `cargo install nestweaver` is not a published crates.io package.
 
 ## Index in CI
 
