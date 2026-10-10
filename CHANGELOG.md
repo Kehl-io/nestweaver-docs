@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/Kehl-io/nestweaver-docs/compare/v0.6.0...v0.6.1) (2026-10-10)
+
+
+### Bug Fixes
+
+* point the CI install example at 12.0.1 ([#20](https://github.com/Kehl-io/nestweaver-docs/issues/20)) ([b6cc64c](https://github.com/Kehl-io/nestweaver-docs/commit/b6cc64cb1d540feddd74aafa7fb0590b58b60e23))
+
 ## [0.6.0](https://github.com/Kehl-io/nestweaver-docs/compare/v0.5.0...v0.6.0) (2026-10-09)
 
 
