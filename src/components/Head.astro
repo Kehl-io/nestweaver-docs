@@ -1,38 +1,29 @@
 ---
 import StarlightHead from '@astrojs/starlight/components/Head.astro';
 
-const { entry } = Astro.locals.starlightRoute;
+const { entry, sidebar } = Astro.locals.starlightRoute;
 const path = Astro.url.pathname;
 const site = Astro.site?.origin || 'https://docs.nestweaver.kehl.io';
 
 const segments = path.split('/').filter(Boolean);
 
-const sectionLabels: Record<string, string> = {
-  'getting-started': 'Getting Started',
-  concepts: 'Core Concepts',
-  cli: 'CLI Reference',
-  'mcp-tools': 'MCP Tools',
-  configuration: 'Configuration',
-  guides: 'Guides',
-};
-
 const breadcrumbs = [{ name: 'Home', url: `${site}/` }];
 
-if (segments.length > 0) {
-  const section = segments[0];
-  if (section && sectionLabels[section]) {
-    breadcrumbs.push({
-      name: sectionLabels[section],
-      url: `${site}/${section}/`,
-    });
+if (segments.length > 1) {
+  const sectionPath = `/${segments[0]}/`;
+  // Only link a section if its landing page exists in the generated navigation.
+  const section = sidebar.find(
+    (item) =>
+      item.type === 'group' &&
+      item.entries.some((child) => child.type === 'link' && child.href === sectionPath),
+  );
+  if (section) {
+    breadcrumbs.push({ name: section.label, url: `${site}${sectionPath}` });
   }
 }
 
-if (segments.length > 1) {
-  breadcrumbs.push({
-    name: entry.data.title,
-    url: `${site}${path}`,
-  });
+if (segments.length > 0 && entry.id !== '404') {
+  breadcrumbs.push({ name: entry.data.title, url: `${site}${path}` });
 }
 
 const breadcrumbSchema = {
@@ -48,4 +39,9 @@ const breadcrumbSchema = {
 ---
 
 <StarlightHead />
-{path !== '/' && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />}
+{entry.id === '404' && <meta name="robots" content="noindex" />}
+{
+  path !== '/' && entry.id !== '404' && (
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  )
+}
