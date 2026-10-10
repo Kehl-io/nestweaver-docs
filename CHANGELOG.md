@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.2](https://github.com/Kehl-io/nestweaver-docs/compare/v0.6.1...v0.6.2) (2026-10-10)
+
+
+### Bug Fixes
+
+* correct documentation breadcrumbs and error indexing ([#22](https://github.com/Kehl-io/nestweaver-docs/issues/22)) ([b100127](https://github.com/Kehl-io/nestweaver-docs/commit/b10012796d4da5656ee55a22f05fc8078a7ab2c2))
+
 ## [0.6.1](https://github.com/Kehl-io/nestweaver-docs/compare/v0.6.0...v0.6.1) (2026-10-10)
 
 
