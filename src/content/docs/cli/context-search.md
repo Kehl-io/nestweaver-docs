@@ -16,7 +16,7 @@ These commands retrieve information from the NestWeaver knowledge graph. The `co
 | `symbol`         | Look up a symbol by name or UID        | `--instance`, `--json`                                                     |
 | `read-symbols`   | Read a symbol's source span            | `--neighbors`, `--token-budget`, `--root`, `--json`                        |
 | `regex-search`   | Regex search over indexed text         | `--path-prefix`, `--kinds`, `--limit`, `--max-millis`, `--json`            |
-| `count-patterns` | Count regex matches per pattern        | `--path-prefix`, `--kinds`, `--json`                                       |
+| `count-patterns` | Count regex matches per pattern        | `--path-prefix`, `--kinds`, `--max-millis`, `--json`                       |
 | `investigate`    | Orient on a topic in one call          | `--scope`, `--token-budget`, `--root`, `--json`                            |
 | `repo-map`       | Token-budgeted structural skeleton     | `--token-budget`, `--json`                                                 |
 | `summary`        | Hierarchical code summaries            | `--level`, `--token-budget`, `--target`, `--json`                          |
@@ -116,7 +116,12 @@ nestweaver regex-search '(?i)todo' --path-prefix src/ --kinds Symbol --limit 20
 
 # Count matches without returning bodies
 nestweaver count-patterns 'TODO' 'FIXME' --path-prefix src/
+
+# Give a large pattern set more time (default 10 s for the whole call)
+nestweaver count-patterns 'unwrap\(' 'expect\(' --max-millis 120000
 ```
+
+`count-patterns` shares one time budget across all its patterns: `--max-millis` (1–600000, default 10000) sets it. When the budget runs out, the patterns it cut short report lower bounds (`"truncated": true` under `--json`), a warning goes to stderr, and the command exits **75**. Exit 0 means every count is exact.
 
 ## Investigation
 

@@ -9,24 +9,24 @@ NestWeaver integrates with 16 AI coding tools through a single `nestweaver setup
 
 ## Supported tools
 
-| Tool           | Config File                            | What Setup Writes                                                                                     |
-| -------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Claude Code    | `.mcp.json`                            | MCP server config, skill file (`.claude/skills/nestweaver/SKILL.md`), hooks (`.claude/settings.json`) |
-| Cursor         | `.cursor/mcp.json`                     | MCP server (lite mode: 6 tools), agent rules (`.cursor/rules/nestweaver.mdc`)                         |
-| Codex          | `.codex/config.toml`                   | MCP server config, codebase guide (`AGENTS.md`)                                                       |
-| Windsurf       | `~/.codeium/windsurf/mcp_config.json`  | MCP server config                                                                                     |
-| JetBrains      | `.junie/mcp/mcp.json`                  | MCP server config                                                                                     |
-| VS Code        | `.vscode/mcp.json`                     | MCP server config under the `servers` key                                                             |
-| Gemini CLI     | `.gemini/settings.json`                | MCP server config                                                                                     |
-| GitHub Copilot | `.vscode/mcp.json`                     | MCP server config under `servers`, instructions (`.github/copilot-instructions.md`)                   |
-| Aider          | —                                      | Nothing: Aider has no MCP client. Setup removes the invalid `repo-map:` line older releases wrote     |
-| Kiro           | `.kiro/settings/mcp.json`              | MCP server config                                                                                     |
-| Continue.dev   | `.continue/mcpServers/nestweaver.json` | MCP server config                                                                                     |
-| Cline          | —                                      | Nothing: setup prints the entry to add in Cline's MCP Servers panel                                   |
-| OpenCode       | `opencode.json`                        | MCP server config under `mcp` (`"type": "local"`)                                                     |
-| Trae           | `.trae/config.json`                    | MCP server config                                                                                     |
-| Devin          | `devin.json`                           | MCP server config                                                                                     |
-| Hermes         | `.hermes/config.json`                  | MCP server config                                                                                     |
+| Tool           | Config File                            | What Setup Writes                                                                                                                        |
+| -------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Claude Code    | `.mcp.json`                            | MCP server config, skill file (`.claude/skills/nestweaver/SKILL.md`), hooks (`.claude/settings.json`)                                    |
+| Cursor         | `.cursor/mcp.json`                     | MCP server (lite mode: 6 tools), agent rules (`.cursor/rules/nestweaver.mdc`)                                                            |
+| Codex          | `.codex/config.toml`                   | MCP server config, codebase guide (`AGENTS.md`)                                                                                          |
+| Windsurf       | `~/.codeium/windsurf/mcp_config.json`  | MCP server config                                                                                                                        |
+| JetBrains      | `.junie/mcp/mcp.json`                  | MCP server config                                                                                                                        |
+| VS Code        | `.vscode/mcp.json`                     | MCP server config under the `servers` key                                                                                                |
+| Gemini CLI     | `.gemini/settings.json`                | MCP server config                                                                                                                        |
+| GitHub Copilot | `.vscode/mcp.json`                     | MCP server config under `servers`, instructions (`.github/copilot-instructions.md`)                                                      |
+| Aider          | —                                      | Nothing: Aider has no MCP client. Setup removes the invalid `repo-map:` line older releases wrote                                        |
+| Kiro           | `.kiro/settings/mcp.json`              | MCP server config                                                                                                                        |
+| Continue.dev   | `.continue/mcpServers/nestweaver.json` | MCP server config                                                                                                                        |
+| Cline          | —                                      | Nothing: setup prints the entry to add in Cline's MCP Servers panel                                                                      |
+| OpenCode       | `opencode.json`                        | MCP server config under `mcp` (`"type": "local"`)                                                                                        |
+| Trae           | `.trae/config.json`                    | MCP server config. Unverified: Trae's own docs do not name this file; check Trae's MCP settings                                          |
+| Devin          | `devin.json`                           | MCP server config. Devin reads `.devin/mcp_config.json` instead, so add the entry there by hand                                          |
+| Hermes         | `.hermes/config.json`                  | MCP server config. HermesAgent ignores this file; configure `~/.hermes/config.yaml` by hand ([HermesAgent](/integrations/hermes-agent/)) |
 
 ## Running setup
 
@@ -102,12 +102,13 @@ command = "nestweaver"
 args = ["mcp", "--db", "/absolute/path/to/nestweaver.lbug"]
 ```
 
-VS Code and Copilot use `servers` instead of `mcpServers` in `.vscode/mcp.json`:
+VS Code and Copilot use `servers` instead of `mcpServers` in `.vscode/mcp.json`, and name the transport with `"type": "stdio"`:
 
 ```json
 {
   "servers": {
     "nestweaver": {
+      "type": "stdio",
       "command": "nestweaver",
       "args": ["mcp", "--db", "/absolute/path/to/nestweaver.lbug"]
     }
@@ -158,4 +159,4 @@ Setup auto-detects tools by checking for their config directories and binaries:
 | Devin          | `devin.json` or `devin` binary in PATH                                                         |
 | Hermes         | `.hermes/` directory or `hermes` binary in PATH                                                |
 
-Use `--all` to configure all 16 tools regardless of detection. `--force` overwrites customized skill and guide files. The tool name is positional: `nestweaver setup claude-code`.
+Use `--all` to configure all 16 tools regardless of detection. `--force` overwrites customized skill and guide files and rebinds an entry that names a different `--db`; it never overwrites `.github/copilot-instructions.md` or an `AGENTS.md` without NestWeaver's generated-section markers. The tool name is positional: `nestweaver setup claude-code`.

@@ -9,15 +9,11 @@ HermesAgent is a self-improving, model-agnostic coding agent by Nous Research. I
 
 ## Setup
 
-### Option 1: Auto-setup (recommended)
+:::caution[Configure HermesAgent manually for now]
+`nestweaver setup hermes` currently writes a project-local `.hermes/config.json` with an `mcpServers` entry. HermesAgent does not read that file: it loads MCP servers only from `~/.hermes/config.yaml`, under `mcp_servers`. Until setup writes that file, use Option 1 or Option 2 below.
+:::
 
-```bash
-nestweaver setup hermes
-```
-
-This writes a project-local `.hermes/config.json` with the NestWeaver MCP server entry, merged with any existing config.
-
-### Option 2: HermesAgent native config
+### Option 1: HermesAgent native config (recommended)
 
 Edit `~/.hermes/config.yaml` and add NestWeaver under `mcp_servers`:
 
@@ -34,7 +30,7 @@ mcp_servers:
 
 The `env` block is important — HermesAgent only passes explicitly declared environment variables to stdio subprocesses, not the full shell environment.
 
-### Option 3: HermesAgent CLI
+### Option 2: HermesAgent CLI
 
 ```bash
 hermes mcp add nestweaver --command nestweaver --args '["mcp", "--db", "/path/to/your.lbug"]'
