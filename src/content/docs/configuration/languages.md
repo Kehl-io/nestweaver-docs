@@ -75,6 +75,18 @@ NestWeaver parses 12 package manifest formats to discover project dependencies, 
 
 Manifest data feeds into dead code detection (identifying entry points) and cross-file resolution (workspace package boundaries).
 
+## Import and call resolution by language
+
+A few languages resolve imports through their own module system rather than file names:
+
+- **Go** — imports resolve through `go.mod`, `go.work` and local `replace` directives, and an import covers every file of the package. Methods are attached to their receiver type, so typed method calls and `Type::method` names resolve. Build-tag variants of a function are all treated as callees.
+- **Python** — `from . import mod`, aliased imports, and names re-exported through a package's `__init__.py` resolve to their definitions.
+- **Java and Kotlin** — imports resolve by the `package` declaration, so a file does not have to be named after the class it defines.
+- **JavaScript and TypeScript** — `.mjs` and `.cjs` files are indexed as JavaScript and `.mts` and `.cts` as TypeScript. A TypeScript `@decorator` is a reference to its function.
+- **Rust** — turbofish calls (`parse::<T>()`) and trait default methods resolve.
+
+Across languages, a method call on a call or `new` receiver (`new K().m()`, `K.make().m()`, chained calls) resolves when the method name is unique, and `new Foo()` creates a call edge to the constructor in Java, C#, PHP, C++, Scala, Groovy and Dart. Edges like these change with the resolver generation, so re-index with `nestweaver index --repo <path> --force` after upgrading to a release that bumps it; `nestweaver stale-check` tells you when.
+
 ## Edge types
 
 NestWeaver tracks six edge types between symbols, each with a default weight used by Personalized PageRank:
@@ -101,7 +113,7 @@ After adding query files, rebuild NestWeaver and re-index your repository:
 
 ```sh
 cargo build --release
-nestweaver index --repo .
+nestweaver index --repo . --force
 ```
 
 Languages without a `_types.scm` file still get full symbol extraction and cross-file resolution. The types file adds the ability to resolve method calls through type bindings and class hierarchies.

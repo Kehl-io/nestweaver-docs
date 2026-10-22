@@ -82,7 +82,13 @@ After defining projects, materialize them into the graph:
 nestweaver materialize-projects --config ./nestweaver-instance.toml --db ./brain.lbug
 ```
 
-NestWeaver also detects implicit projects automatically. If your vault has a `Projects/<slug>/` folder containing a `<slug>.md` entry note, it is recognized as a project during indexing.
+NestWeaver can also detect implicit projects from vault structure. A `Projects/<slug>/` folder containing a `<slug>.md` entry note is recognized as a project when you run the detector; indexing does not do this on its own:
+
+```bash
+# Preview, then write the Project nodes
+nestweaver detect-implicit-projects --vault ~/my-vault --db ./brain.lbug --dry-run
+nestweaver detect-implicit-projects --vault ~/my-vault --db ./brain.lbug
+```
 
 ## Query across code and notes
 
@@ -126,7 +132,7 @@ nestweaver brain watch ~/my-vault --db ./brain.lbug \
   --refresh-wiki-hours 6 --config ./nestweaver-instance.toml
 ```
 
-**Manual refresh** — force a full re-index of all registered vaults:
+**Manual refresh** — force a full re-index of one vault:
 
 ```bash
 nestweaver brain refresh ~/my-vault --db ./brain.lbug
@@ -160,5 +166,5 @@ nestweaver brain tag-graph --db ./brain.lbug
 ```
 
 :::tip
-Run `brain doc-stats` periodically to catch drift. A rising broken-link count usually means notes were renamed without updating wikilinks. `brain broken-links` will suggest fixes.
+Run `brain doc-stats` periodically to catch drift. A rising broken-link count usually means notes were renamed without updating wikilinks. `brain broken-links` will suggest fixes. Heading links (`[[Note#Heading]]`) and block references (`[[Note#^block-id]]`) resolve to their note; an anchor that names no heading or block is reported as "no such block/heading" rather than a missing note. Frontmatter relationship values written as wikilinks (`depends_on: "[[Other note]]"`) resolve too.
 :::

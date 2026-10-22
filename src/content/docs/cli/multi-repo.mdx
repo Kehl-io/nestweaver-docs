@@ -24,16 +24,16 @@ Projects group repositories, vault folders, and feature bundles into named units
 
 ## Command reference
 
-| Command                    | Description                                                          | Key Flags                                                                                     |
-| -------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `list-projects`            | List all projects (declared and materialized)                        | `--json`, `--db`, `--config`                                                                  |
-| `project-context`          | Get PPR-ranked context scoped to a project                           | `--token-budget`, `--include-components`, `--since`, `--recency-weight`, `--json`, `--config` |
-| `materialize-projects`     | Materialize projects, wiki sources, and cross-repo links from config | `--config`, `--db`                                                                            |
-| `detect-implicit-projects` | Detect implicit projects from vault structure                        | `--vault`, `--db`                                                                             |
-| `suggest-links`            | Discover potential cross-repo links                                  | `--db`, `--json`, `--config`                                                                  |
-| `list-links`               | List all declared cross-repo links                                   | `--config`, `--json`                                                                          |
-| `list-features`            | List feature bundles from instance config                            | `--config`, `--json`                                                                          |
-| `cross-repo-refs`          | Find references crossing repo boundaries                             | `--repo`, `--json`                                                                            |
+| Command                    | Description                                                          | Key Flags                                                                                                                                                                         |
+| -------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `list-projects`            | List all projects (declared and materialized)                        | `--json`, `--db`, `--config`                                                                                                                                                      |
+| `project-context`          | Get PPR-ranked context scoped to a project                           | `--token-budget`, `--repos`, `--path-prefix`, `--kinds`, `--tags`, `--include-components`, `--response-format`, `--detailed`, `--since`, `--recency-weight`, `--json`, `--config` |
+| `materialize-projects`     | Materialize projects, wiki sources, and cross-repo links from config | `--config`, `--db`                                                                                                                                                                |
+| `detect-implicit-projects` | Detect implicit projects from vault structure (writes Project nodes) | `--vault`, `--dry-run`, `--db`                                                                                                                                                    |
+| `suggest-links`            | Discover potential cross-repo links                                  | `--db`, `--json`, `--config`                                                                                                                                                      |
+| `list-links`               | List all declared cross-repo links                                   | `--config`, `--json`                                                                                                                                                              |
+| `list-features`            | List feature bundles from instance config                            | `--config`, `--json`                                                                                                                                                              |
+| `cross-repo-refs`          | Find references crossing repo boundaries                             | `--repo`, `--json`                                                                                                                                                                |
 
 ## Defining projects
 
@@ -65,7 +65,9 @@ nestweaver list-projects --db ./all.lbug --json
 
 ## Project-scoped context
 
-`project-context` returns a concise orientation of about 1000 tokens by default: kind, title, and location. `--detailed` is about 3000 tokens and adds UIDs. Pass `--token-budget` to override that cap. Linked notes from outside the project are excluded.
+`project-context` returns a concise orientation of about 1000 tokens by default: UID, kind, title, and location for each node. `--detailed` (or `--response-format detailed`) is about 3000 tokens and adds relevance scores. Pass `--token-budget` to override that cap. Linked notes from outside the project are excluded.
+
+Narrow the result with `--repos`, `--path-prefix`, `--kinds` and `--tags`. A `--repos` value that names no indexed repo is reported as a repo miss (not as "project not found"), and an unknown `--kinds` value is a usage error.
 
 ```bash
 # Get context for a project

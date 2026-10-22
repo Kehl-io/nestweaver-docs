@@ -15,7 +15,9 @@ Start by indexing your project:
 
 ```bash
 nestweaver index --repo .
-# Indexing /path/to/repo → ./nestweaver.lbug
+# [Discovering] Scanning /path/to/repo
+# [Writing] Indexed N files, N symbols
+# [Done] Done — N files, N symbols, N edges
 ```
 
 NestWeaver parses every supported file using Tree-sitter, resolves cross-file references (CALLS, IMPORTS, USES, ACCESSES edges), and stores the graph locally.

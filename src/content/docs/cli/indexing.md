@@ -9,13 +9,15 @@ Indexing is the first step to building your knowledge graph. NestWeaver parses s
 
 ## Command reference
 
-| Command       | Description                                            | Key Flags                                                                                   |
-| ------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
-| `index`       | Parse and index a repository                           | `--repo`, `--name`, `--db`, `--force`, `--with-trigrams`, `--with-git-activity`, `--config` |
-| `watch`       | Live re-indexing via filesystem watcher                | positional repo path, `--db`, `--instance`, `--config`, `--refresh-wiki-hours`              |
-| `list-repos`  | List all indexed repositories                          | `--instance`, `--json`, `--db`, `--config`                                                  |
-| `remove-repo` | Remove a repo and all its data from the graph          | `--db`                                                                                      |
-| `prune-stale` | Remove repos/vaults whose source paths no longer exist | `--db`                                                                                      |
+| Command       | Description                                             | Key Flags                                                                                                                          |
+| ------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `index`       | Parse and index a repository                            | `--repo`, `--name`, `--db`, `--force`, `--with-trigrams`, `--with-git-activity`, `--config`, `--json`, `--fail-on-skip`, `--setup` |
+| `watch`       | Live re-indexing via filesystem watcher                 | positional repo path, `--db`, `--instance`, `--config`, `--refresh-wiki-hours`, `--force`                                          |
+| `watch-stop`  | Stop the daemon's active file watcher                   | `--db`                                                                                                                             |
+| `list-repos`  | List all indexed repositories                           | `--instance`, `--json`, `--db`, `--config`                                                                                         |
+| `remove-repo` | Remove a repo and all its data from the graph           | positional target, `--db`                                                                                                          |
+| `prune-stale` | Remove repos/vaults whose source paths no longer exist  | `--db`, `--json`                                                                                                                   |
+| `stale-check` | Compare each repo's indexed SHA and resolver generation | `--json`, `--db`, `--config`                                                                                                       |
 
 ## Indexing a repository
 
@@ -42,6 +44,32 @@ Use `--name` to avoid basename collisions when multiple repos share generic name
 
 `--with-trigrams` builds a trigram posting table that accelerates `regex-search`. The trigram index adds some time to the initial build but makes subsequent regex queries significantly faster.
 
+## What indexing skips and discloses
+
+Indexing reports what it could not read instead of failing silently or failing the whole run. `--json` lists each skip under `skipped_files` with a reason code, and `coverage_status` reads `"degraded"` whenever a skip is not a deliberate exclusion. `--fail-on-skip` exits 1 in that case, which is the gate to use in CI.
+
+- **Unreadable files and directories.** An unreadable source in a language that cannot define an API contract is skipped and disclosed. An unreadable JavaScript, TypeScript, Java or Kotlin source fails the index instead, because it might be a route handler and skipping it would publish an incomplete contract set. An unreadable directory gets one disclosure, not one per file.
+- **Files that vanish mid-scan**, for example during a checkout or rebase, are indexed as deletions.
+- **Binary files** with a source extension (an MPEG transport stream named `.ts`) are skipped as one `binary` row.
+- **Ignored files.** `.gitignore`, `.ignore` and `.git/info/exclude` are honoured, including for tracked files. The watcher reconciles edits to those files: newly hidden sources leave the graph and newly visible ones are indexed.
+- **A malformed OpenAPI spec** is skipped and disclosed as degraded coverage rather than failing every index. Pathologically nested specs are refused quickly.
+- **Unsafe roots.** System pseudo-filesystems such as `/proc`, `/sys` and `/dev`, and other system roots, are refused as repo or vault roots.
+
+Indexing never runs programs from the repository it reads. Git is called with the repository's hooks, fsmonitor, credential helpers, filter, textconv and external-diff drivers, pager and askpass programs disabled, and Git metadata that points into another repository (a forged `commondir` or gitfile) is refused.
+
+## Upgrading: re-index with `--force`
+
+Every graph records the resolver generation that built it, and compatibility is an exact match. When a release changes how calls and imports resolve, `nestweaver stale-check` reports the repo as `outdated_resolver` and exits 2, `dead-code` refuses, and rankings are marked stale. Re-index once per repo with `--force`:
+
+```bash
+nestweaver stale-check --db ./nestweaver.lbug
+nestweaver index --repo ./my-project --db ./nestweaver.lbug --force
+```
+
+A plain `index` is not enough: a generation-stale repo is already at git HEAD, so the incremental path finds nothing to do. The release after 12.2.1 moves the resolver generation from 11 to 12 (improved Go, Python, Kotlin and Java import resolution, method calls on call and `new` receivers, and `new Foo()` call edges), so every repo needs one forced re-index after that upgrade.
+
+An index that is killed part-way is recorded as incomplete: `stale-check` reports the repo as `incomplete`, and the next `index` rebuilds it in full.
+
 ## Live re-indexing
 
 ```bash
@@ -53,6 +81,8 @@ nestweaver watch ./my-project
 ```
 
 The watcher monitors for creates, modifies, and deletes of supported source files. Changes are debounced into 2-second windows, and each batch triggers an incremental re-index. This keeps the graph current as you code without manual re-runs. Press Ctrl-C to stop cleanly.
+
+The watcher runs inside the daemon. If a `watch` was killed without a clean shutdown, `nestweaver watch-stop` releases the watcher slot (it does not start a daemon), or `watch --force` replaces the old watcher. A watcher that cannot publish a batch is reported by `nestweaver brain status`.
 
 ## Managing indexed repos
 
@@ -67,6 +97,6 @@ nestweaver remove-repo my-project
 nestweaver prune-stale
 ```
 
-`remove-repo` accepts a repo name, filesystem path, `file://` URL, or UID. It cascade-deletes all symbols, files, services, and contracts belonging to that repo. On-disk files are not touched.
+`remove-repo` accepts a repo name, remote URL, filesystem path, `file://` URL, or UID, including the exact `URL:` and UID lines `list-repos` prints. A name several repos share is ambiguous: the command exits 3 and lists them, so pass the UID. It cascade-deletes all symbols, files, services, and contracts belonging to that repo. On-disk files are not touched.
 
-`prune-stale` scans every indexed repo and vault, checks whether its source path still exists on disk, and removes any that are gone. Run it after reorganizing or deleting project directories to keep the graph clean.
+`prune-stale` scans every indexed repo and vault, checks whether its source path still exists on disk, and removes those whose path is not found. A path that cannot be checked (for example, an unreadable parent directory) is kept and reported as a warning. Run it after reorganizing or deleting project directories to keep the graph clean.

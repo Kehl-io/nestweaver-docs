@@ -26,12 +26,14 @@ NestWeaver exposes 43 tools via the [Model Context Protocol](https://modelcontex
 Run `nestweaver setup` to auto-configure your agent's MCP connection. Supported agents:
 
 - **Claude Code** — writes to `.mcp.json` in the project root
-- **Cursor** — configures the MCP server in Cursor settings
-- **Aider** — adds the MCP server to `.aider.conf.yml`
-- **Copilot CLI** — registers the MCP endpoint
+- **Cursor** — writes `.cursor/mcp.json` (lite mode, 6 tools)
+- **VS Code and GitHub Copilot** — write `.vscode/mcp.json` under the `servers` key
 - **Gemini CLI** — configures via `.gemini/settings.json`
-- **Codex** — registers the MCP server for OpenAI Codex
+- **Codex** — writes `.codex/config.toml`
+- **Cline** — prints the entry to add in Cline's MCP Servers panel (Cline has no project-level file)
 - **Other MCP-compatible agents** — use `nestweaver mcp` to start the server manually
+
+Aider has no MCP client, so setup registers nothing for it. See [AI Tool Integrations](/configuration/integrations/) for every tool's config path.
 
 ## Tool categories
 
@@ -47,16 +49,22 @@ Run `nestweaver setup` to auto-configure your agent's MCP connection. Supported 
 
 Many tools share these filtering and output parameters:
 
-| Parameter         | Type       | Description                                                                                             |
-| ----------------- | ---------- | ------------------------------------------------------------------------------------------------------- |
-| `token_budget`    | `integer`  | Approximate token cap for the response (chars / 4). Controls how much context is returned.              |
-| `response_format` | `string`   | `"concise"` for names and relationships only; `"detailed"` (default) adds file paths, scores, and UIDs. |
-| `repos`           | `string[]` | Filter results to specific repository UIDs or names.                                                    |
-| `tags`            | `string[]` | Include only nodes tagged with any of these tags.                                                       |
-| `exclude_tags`    | `string[]` | Exclude nodes tagged with any of these tags.                                                            |
-| `path_prefix`     | `string`   | Include only nodes whose file path starts with this prefix.                                             |
-| `kinds`           | `string[]` | Filter by node kind: `Symbol`, `Note`, `Section`, `Tag`, `Heading`. Case-insensitive prefix match.      |
-| `limit`           | `integer`  | Maximum number of results to return. Total counts are always reported regardless of limit.              |
+| Parameter         | Type       | Description                                                                                                                                    |
+| ----------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `token_budget`    | `integer`  | Approximate token cap for the response (chars / 4). Controls how much context is returned.                                                     |
+| `response_format` | `string`   | `"concise"` for compact rows that still carry each node's UID and location; `"detailed"` adds scores and metadata. The default varies by tool. |
+| `repos`           | `string[]` | Filter results to specific repository UIDs or names.                                                                                           |
+| `tags`            | `string[]` | Include only nodes tagged with any of these tags.                                                                                              |
+| `exclude_tags`    | `string[]` | Exclude nodes tagged with any of these tags.                                                                                                   |
+| `path_prefix`     | `string`   | Include only nodes whose file path starts with this prefix.                                                                                    |
+| `kinds`           | `string[]` | Filter by node kind: `Symbol`, `Note`, `Section`, `Tag`, `Heading`. Case-insensitive prefix match.                                             |
+
+## Input limits and errors
+
+Every list argument is capped and deduplicated, and each tool's `inputSchema` states its limits (`maxItems`, `maxLength`, `minimum`, `maximum`): for example at most 256 context seeds, 32 `kinds`, 100 `repos` or `tags`, 1000 changed files, and 64 `count_patterns` patterns. A value outside the schema, an empty identifier, or two spellings of one argument with different values (`changed_files` and `files`) is refused as an invalid argument. Over stdio, a single JSON-RPC frame larger than 64 MiB is refused.
+
+A lookup whose target does not exist returns `isError: true` with a JSON envelope (`status: "not_found"`, `message`, and `did_you_mean` when there are suggestions). An ambiguous name lists candidates with their file paths. An unknown tool name is a JSON-RPC error (`-32602`).
+| `limit` | `integer` | Maximum number of results to return. Total counts are always reported regardless of limit. |
 
 :::tip[MCP vs CLI token costs]
 In subagents, hooks, and scripts, use the CLI (`nestweaver context`, `nestweaver search --json`) instead of MCP tools. The CLI returns precomputed answers without loading tool schemas into context, saving approximately 40--60% fewer tokens per query.
@@ -74,7 +82,7 @@ No parameters required.
 
 ### prune_stale
 
-Remove all indexed repos and vaults whose source directories no longer exist on disk.
+Remove indexed repos and vaults whose source directories no longer exist on disk. Only a path that is not found is removed; a path that cannot be checked (for example, an unreadable parent directory) is kept and reported as a warning.
 
 No parameters required.
 
@@ -82,11 +90,13 @@ No parameters required.
 
 Attach custom key-value metadata to any node in a JSON sidecar alongside the database.
 
-| Parameter | Type     | Required | Description                                           |
-| --------- | -------- | -------- | ----------------------------------------------------- |
-| `uid`     | `string` | Yes      | Node UID to annotate.                                 |
-| `key`     | `string` | Yes      | Property name (e.g. `"team_owner"`, `"deprecated"`).  |
-| `value`   | `any`    | Yes      | Property value — any JSON value. Overwrites existing. |
+| Parameter | Type     | Required | Description                                                                                    |
+| --------- | -------- | -------- | ---------------------------------------------------------------------------------------------- |
+| `uid`     | `string` | Yes      | Node UID to annotate, at most 1 KiB, no control characters.                                    |
+| `key`     | `string` | Yes      | Property name (e.g. `"team_owner"`, `"deprecated"`), at most 256 bytes, no control characters. |
+| `value`   | `any`    | Yes      | Property value — any JSON value up to 64 KiB serialized. Overwrites existing.                  |
+
+`last_indexed_at` is reserved for NestWeaver and cannot be set or unset. The sidecar holds at most 100,000 annotated nodes, 256 properties per node, and 32 MiB in total. A write that has to wait behind an index waits up to `NESTWEAVER_METADATA_WRITE_WAIT_SECS` (default 15 seconds), then returns `write-busy` without applying anything; retry it. A cancelled request is never applied, and a committed write is never reported as failed.
 
 ### query_extensions
 

@@ -101,6 +101,8 @@ nestweaver read-symbols processPayment --neighbors 1
 nestweaver read-symbols processPayment CheckoutService --token-budget 4000
 ```
 
+Name targets by UID, name, `path::name`, `Class::method` or `path::<module>` (a file's top-level code). Each body is read from the symbol's recorded repo root. An explicit `--root` must be inside an indexed repo or vault, or a linked worktree of one; reads never follow a symlink out of the repo. A first symbol larger than `--token-budget` is cut to its leading lines and flagged `body_truncated`. A target that does not resolve exits 2 with suggestions; an unreadable root exits 1.
+
 ## Regex search
 
 Search indexed text with regular expressions. `count-patterns` is the counting counterpart — it returns match counts per pattern without bodies.
@@ -148,5 +150,8 @@ Summary levels:
 - **`symbol`** — function and class details: signatures, parameters, return types.
 - **`file`** — exports and imports per file.
 - **`cluster`** — community-level architecture: what each detected module cluster does and how clusters relate.
+- **`hub`** — the most connected symbols and what depends on them.
+
+The default level is `file` and the default `--token-budget` is 20000 (`0` means unlimited). An invalid `--level` exits 64, and a `--target` that matches nothing exits 2.
 
 Summaries are deterministic and derived from graph data — no LLM is involved.

@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-The NestWeaver CLI is the primary interface for indexing codebases, querying the knowledge graph, and managing brain vaults. All commands route through a background daemon by default, enabling concurrent access from multiple AI tools without lock contention. The daemon auto-starts on first use and exits after 1 hour of inactivity.
+The NestWeaver CLI is the primary interface for indexing codebases, querying the knowledge graph, and managing brain vaults. All commands route through a background daemon by default, enabling concurrent access from multiple AI tools without lock contention. The daemon auto-starts on first use. An explicitly started daemon (`nestweaver daemon start`) exits after 1 hour of inactivity (`--idle-timeout`, default 3600 seconds). An autostarted daemon for a database that looks temporary (under `/tmp`, `$TMPDIR` or `/var/folders`) exits after 60 seconds instead (`NESTWEAVER_EPHEMERAL_IDLE_TIMEOUT_SECS`); set `NESTWEAVER_REAL_DB_UNDER_TEMP_ROOT=1` when a long-lived database lives under one of those paths.
 
 ## Global flags
 
@@ -21,15 +21,18 @@ These flags work on every command.
 
 ## Exit codes
 
-| Code | Meaning                                                                                                 |
-| ---- | ------------------------------------------------------------------------------------------------------- |
-| 0    | Success                                                                                                 |
-| 1    | The command failed                                                                                      |
-| 2    | Target not found. Also: `stale-check` found drift, `pr-impact --strict` blocked, or `dead-code` refused |
-| 3    | Ambiguous match                                                                                         |
-| 4    | Unauthorized (`pull` only)                                                                              |
-| 5    | Unavailable (`pull` only)                                                                               |
-| 64   | Usage error (unknown flag, bad value)                                                                   |
+| Code | Meaning                                                                                                                                                                                                                                                                            |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0    | Success                                                                                                                                                                                                                                                                            |
+| 1    | The command failed                                                                                                                                                                                                                                                                 |
+| 2    | Target not found. Also: `stale-check` found drift, `pr-impact --strict` blocked, or `dead-code` refused                                                                                                                                                                            |
+| 3    | Ambiguous match                                                                                                                                                                                                                                                                    |
+| 4    | Unauthorized (`pull` only)                                                                                                                                                                                                                                                         |
+| 5    | Unavailable (`pull` only)                                                                                                                                                                                                                                                          |
+| 64   | Usage error: an unknown flag, an out-of-range or empty value, a missing argument, or a value a tool's schema rejects. Examples: `affected-tests --files` without `--repo` when several repos are indexed, `pre-push-impact --format <invalid>`, `list-features` without `--config` |
+| 69   | `daemon status` only: the daemon is running but unhealthy (unreachable, or its owner or endpoint cannot be verified)                                                                                                                                                               |
+
+With `--json`, a not-found exit 2 writes `{"error": "not found", ...}` to stdout on the read commands. An exit 64 raised by the argument parser happens before `--json` is read, so it writes only to stderr.
 
 ## Command groups
 
@@ -42,6 +45,8 @@ These flags work on every command.
 ## Output formats
 
 `--json` and `--no-embed` exist only on commands that declare them. `--db` is also per command (env: `NESTWEAVER_DB`, default `./nestweaver.lbug`). Human-readable output is the default when stdout is a terminal.
+
+Relative `--db`, `--config` and repo paths are resolved against your current directory before the CLI sends them to the daemon, so a command run from any directory reads the files you named. When stdout is a terminal, control characters that come from indexed content (file names, symbol names, note text) are escaped; piped output is unchanged. Log lines respect `--no-color`, `NO_COLOR` and a non-terminal stderr.
 
 ## Getting help
 

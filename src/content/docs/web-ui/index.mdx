@@ -128,7 +128,7 @@ The URL captures the workspace scope, selected node, active lens, and representa
 
 ## WASM mode
 
-Append `?engine=wasm` to the URL to run graph algorithms client-side via WebAssembly. The browser downloads a MessagePack snapshot and executes Personalized PageRank locally, with no server round-trips for queries. See [the build note in the main repository](https://github.com/Kehl-io/nestweaver) for producing the WASM artifact.
+Append `?engine=wasm` to the URL to load a WebAssembly copy of the graph snapshot. The browser downloads a MessagePack snapshot once per graph generation, and the status bar shows the active engine with the snapshot's node and edge counts. Queries, including Personalized PageRank, still run on the server. See [the build note in the main repository](https://github.com/Kehl-io/nestweaver) for producing the WASM artifact.
 
 :::tip[Accessibility]
 All six task journeys have a keyboard-only path, reduced-motion preserves every static meaning channel, and graph answers always have a table/JSON equivalent. A screen-reader landmark summary mirrors the canvas so the scene's structure is available without vision.

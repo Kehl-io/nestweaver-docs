@@ -28,12 +28,19 @@ NestWeaver integrates with 16 AI tools out of the box. Run `setup` to auto-confi
 nestweaver setup
 # NestWeaver Setup
 # ────────────────────────────────────────
-# ✓ Claude Code — .claude/settings.json — MCP server configured
-# ✓ Cursor — .cursor/mcp.json — MCP server (lite: 6 tools)
+# Database: /path/to/repo/nestweaver.lbug (will be created on first index)
+#
+# ✓ Claude Code
+#   • .mcp.json — MCP server configured
+#   • .claude/skills/nestweaver/SKILL.md — skill written
+#   • .claude/settings.json — hooks installed
+# ✓ Cursor
+#   • .cursor/mcp.json — MCP server (lite: 6 tools)
+#   • .cursor/rules/nestweaver.mdc — agent rules written
 # ...
 ```
 
-This writes the correct MCP server configuration for each detected tool (Claude Code, Cursor, Codex, Gemini CLI, Copilot CLI, Aider, Kiro, and more). Run `nestweaver setup --force` to regenerate files even if you've customized them.
+This writes the correct MCP server configuration for each detected tool (Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, Kiro, and more), with the database as an absolute path. Setup reports every tool it tried and exits non-zero if any failed. Run `nestweaver setup --force` to regenerate files even if you've customized them, or to rebind an entry that points at a different database. See [AI Tool Integrations](/configuration/integrations/) for where each tool's config goes.
 
 ## Index your codebase
 
@@ -41,7 +48,9 @@ Point NestWeaver at a repository to build the knowledge graph:
 
 ```bash
 nestweaver index --repo .
-# Indexing /path/to/repo → ./nestweaver.lbug
+# [Discovering] Scanning /path/to/repo
+# [Writing] Indexed N files, N symbols
+# [Done] Done — N files, N symbols, N edges
 ```
 
 NestWeaver auto-detects the repo root from `.git`, parses every supported file, resolves cross-file references with confidence scoring, and writes everything to a local database.

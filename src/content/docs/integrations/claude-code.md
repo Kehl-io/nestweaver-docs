@@ -28,11 +28,13 @@ This writes three artifacts to your project:
   "mcpServers": {
     "nestweaver": {
       "command": "nestweaver",
-      "args": ["mcp", "--db", "./nestweaver.lbug"]
+      "args": ["mcp", "--db", "/absolute/path/to/nestweaver.lbug"]
     }
   }
 }
 ```
+
+Setup writes the database as an absolute path, so the server finds the same graph however Claude Code is launched. If `.mcp.json` already names a different database, setup reports it and leaves it alone; `nestweaver setup claude-code --force` rebinds it.
 
 This gives Claude Code access to all 43 NestWeaver MCP tools — context retrieval, code navigation, impact analysis, and vault queries.
 
@@ -43,14 +45,18 @@ The setup command installs two hooks:
 **SessionStart** — Prints brain status so the agent knows the graph is available:
 
 ```bash
-nestweaver brain status --db ./nestweaver.lbug 2>/dev/null || echo 'NestWeaver: not indexed yet (run: nestweaver index --repo .)'
+nestweaver brain status --db '/absolute/path/to/nestweaver.lbug' 2>/dev/null || echo 'NestWeaver: not indexed yet (run: nestweaver index --repo .)'
 ```
 
-**PreToolUse (Bash)** — When the agent runs `grep`, `rg`, `find`, or similar search commands, returns context nudging toward `brain_search` or `brain_context` instead. Non-blocking — the original command still runs.
+The database path is shell-quoted, so a path with spaces or shell metacharacters is passed through intact.
+
+**PreToolUse (Bash)** — When the agent runs `grep`, `rg`, `find`, `fd`, `ack` or `ag`, the hook reads the command from the event's `tool_input` and adds a note to the agent's context (`hookSpecificOutput.additionalContext`) suggesting `brain_search`, `regex_search` or `brain_context` instead. Non-blocking — the original command still runs. It works without `jq` by matching the raw event text.
+
+Setup in releases up to 12.2.1 wrote a Bash hook that read the wrong keys and never fired. Run `nestweaver setup claude-code` again to replace them.
 
 ### Advanced hooks
 
-The NestWeaver repo includes additional hooks you can install manually from `integrations/claude-code/hooks/`:
+The NestWeaver repo includes additional hooks you can install manually from `integrations/claude-code/hooks/`. Copy the scripts to `.claude/hooks/nestweaver/` in your project and merge `integrations/claude-code/settings.json` into your `.claude/settings.json`; its commands run the scripts from `$CLAUDE_PROJECT_DIR/.claude/hooks/nestweaver/`. MCP servers belong in `.mcp.json`, not in `settings.json`.
 
 | Hook                         | Trigger                 | What it does                                                                                            |
 | ---------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------- |
@@ -59,7 +65,7 @@ The NestWeaver repo includes additional hooks you can install manually from `int
 | `pre-search-enrich.sh`       | PreToolUse (Bash)       | Runs `nestweaver search` alongside grep to show graph results                                           |
 | `post-commit-stale-check.sh` | PostToolUse (Bash)      | After `git commit`, compares HEAD against the indexed SHA and warns if the index is behind              |
 
-All hooks read from stdin, use `$NESTWEAVER_DB` (default `./nestweaver.lbug`), and exit silently if the database doesn't exist.
+All hooks read the Claude Code event from stdin (`tool_input.file_path` or `tool_input.command`), return their context as `hookSpecificOutput.additionalContext` on stdout, use `$NESTWEAVER_DB` (default `nestweaver.lbug` in the project directory), and exit silently if `jq` is missing or the database doesn't exist. They never block a tool call.
 
 ## Recommended workflow
 
@@ -118,6 +124,8 @@ NestWeaver can generate a `CLAUDE.md` file tailored to your codebase — archite
 ```bash
 nestweaver generate-guide --format claude-md --db ./nestweaver.lbug --output ./CLAUDE.md
 ```
+
+`--output` creates the file with `<!-- nestweaver:begin -->` / `<!-- nestweaver:end -->` markers when it is missing, and afterwards replaces only the text between them. It refuses, and leaves the file unchanged, when an existing file has no markers or more than one pair, so add the markers to a hand-written `CLAUDE.md` first.
 
 Use `--config` to enrich the guide with features and cross-repo links from an instance config:
 

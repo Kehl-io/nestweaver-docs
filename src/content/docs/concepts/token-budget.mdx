@@ -105,32 +105,19 @@ A typical context query for an agent working on a payment processing feature:
 nestweaver context UserService --token-budget 2000
 ```
 
-Representative output:
+Representative output (symbol names and scores depend on your codebase):
 
-```
-UserService (class) — src/services/user-service.ts:15
-  Relevance: 0.92 | PPR: 0.88 | BM25: 0.95 | Semantic: 0.94
+```text
+Seeds (1 resolved):
+  UserService  Class  src/services/user-service.ts:15
 
-  class UserService {
-    constructor(private db: DatabasePool, private cache: RedisClient)
-    async getUser(id: string): Promise<User>
-    async updateProfile(id: string, data: ProfileUpdate): Promise<User>
-    async deleteUser(id: string): Promise<void>
-  }
-
-  Called by: PaymentController.processPayment, AuthMiddleware.validateSession
-  Calls: DatabasePool.query, RedisClient.get, RedisClient.set
-  Imported by: payment-controller.ts, auth-middleware.ts, user-router.ts
-
-UserRepository (class) — src/repositories/user-repository.ts:8
-  Relevance: 0.71 | PPR: 0.65 | BM25: 0.70 | Semantic: 0.78
-
-  class UserRepository {
-    async findById(id: string): Promise<User | null>
-    async update(id: string, data: Partial<User>): Promise<User>
-  }
-
-(2 symbols, ~480 tokens)
+Connected (4 symbols, ranked by relevance):
+  getUser         Method  src/services/user-service.ts:22    0.4120
+  processPayment  Method  src/payments/controller.ts:41      0.2875
+  validateSession Method  src/auth/middleware.ts:12          0.1903
+  UserRepository  Class   src/repositories/user-repository.ts:8  0.1544
 ```
 
-The output fits within the 2000-token budget and contains only the symbols most relevant to `UserService` — ranked by a combination of graph proximity, text match, and semantic similarity.
+Each connected row is a symbol, its kind, its location, and its relevance score. Pass `--json` for UIDs and the full score breakdown, and use `read-symbols` to read a body.
+
+The output fits within the 2000-token budget and lists only the symbols most relevant to `UserService`, ranked by a combination of graph proximity, text match, and semantic similarity.
