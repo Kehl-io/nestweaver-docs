@@ -15,24 +15,24 @@ nestweaver setup
 
 This auto-detects installed AI tools and writes the MCP server configuration for each one, with the database as an absolute path. It reports each file it wrote, and exits non-zero if any tool failed. It currently supports 16 tools:
 
-| Tool                                       | Config Path                            | Notes                                                   |
-| ------------------------------------------ | -------------------------------------- | ------------------------------------------------------- |
-| [Claude Code](/integrations/claude-code/)  | `.mcp.json` + `.claude/settings.json`  | Deepest integration — includes enrichment hooks         |
-| [HermesAgent](/integrations/hermes-agent/) | `.hermes/config.json`                  | Auto-discovers tools as `mcp_nestweaver_*`              |
-| Cursor                                     | `.cursor/mcp.json`                     | Setup writes the 6-tool lite mode                       |
-| Codex                                      | `.codex/config.toml`                   | Also writes `AGENTS.md`                                 |
-| Windsurf                                   | `~/.codeium/windsurf/mcp_config.json`  | Global config                                           |
-| JetBrains                                  | `.junie/mcp/mcp.json`                  |                                                         |
-| VS Code                                    | `.vscode/mcp.json`                     | Under the `servers` key                                 |
-| Gemini CLI                                 | `.gemini/settings.json`                |                                                         |
-| GitHub Copilot                             | `.vscode/mcp.json`                     | Under `servers`; also `.github/copilot-instructions.md` |
-| Aider                                      | —                                      | No MCP client; setup writes nothing                     |
-| Kiro                                       | `.kiro/settings/mcp.json`              |                                                         |
-| Continue.dev                               | `.continue/mcpServers/nestweaver.json` |                                                         |
-| Cline                                      | —                                      | Setup prints the entry to add in Cline's panel          |
-| OpenCode                                   | `opencode.json`                        | Under the `mcp` key                                     |
-| Trae                                       | `.trae/config.json`                    |                                                         |
-| Devin                                      | `devin.json`                           |                                                         |
+| Tool                                       | Config Path                            | Notes                                                                   |
+| ------------------------------------------ | -------------------------------------- | ----------------------------------------------------------------------- |
+| [Claude Code](/integrations/claude-code/)  | `.mcp.json` + `.claude/settings.json`  | Deepest integration — includes enrichment hooks                         |
+| [HermesAgent](/integrations/hermes-agent/) | `.hermes/config.json`                  | Ignored by HermesAgent today; configure `~/.hermes/config.yaml` by hand |
+| Cursor                                     | `.cursor/mcp.json`                     | Setup writes the 6-tool lite mode                                       |
+| Codex                                      | `.codex/config.toml`                   | Also writes `AGENTS.md`                                                 |
+| Windsurf                                   | `~/.codeium/windsurf/mcp_config.json`  | Global config                                                           |
+| JetBrains                                  | `.junie/mcp/mcp.json`                  |                                                                         |
+| VS Code                                    | `.vscode/mcp.json`                     | Under the `servers` key                                                 |
+| Gemini CLI                                 | `.gemini/settings.json`                |                                                                         |
+| GitHub Copilot                             | `.vscode/mcp.json`                     | Under `servers`; also `.github/copilot-instructions.md`                 |
+| Aider                                      | —                                      | No MCP client; setup writes nothing                                     |
+| Kiro                                       | `.kiro/settings/mcp.json`              |                                                                         |
+| Continue.dev                               | `.continue/mcpServers/nestweaver.json` |                                                                         |
+| Cline                                      | —                                      | Setup prints the entry to add in Cline's panel                          |
+| OpenCode                                   | `opencode.json`                        | Under the `mcp` key                                                     |
+| Trae                                       | `.trae/config.json`                    | Path not confirmed by Trae's docs; check Trae's MCP settings            |
+| Devin                                      | `devin.json`                           | Devin reads `.devin/mcp_config.json`; add the entry there by hand       |
 
 ### Tools not covered by setup
 

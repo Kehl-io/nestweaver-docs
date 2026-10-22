@@ -90,13 +90,13 @@ No parameters required.
 
 Attach custom key-value metadata to any node in a JSON sidecar alongside the database.
 
-| Parameter | Type     | Required | Description                                                                                    |
-| --------- | -------- | -------- | ---------------------------------------------------------------------------------------------- |
-| `uid`     | `string` | Yes      | Node UID to annotate, at most 1 KiB, no control characters.                                    |
-| `key`     | `string` | Yes      | Property name (e.g. `"team_owner"`, `"deprecated"`), at most 256 bytes, no control characters. |
-| `value`   | `any`    | Yes      | Property value — any JSON value up to 64 KiB serialized. Overwrites existing.                  |
+| Parameter | Type     | Required | Description                                                                                                                                                              |
+| --------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `uid`     | `string` | Yes      | Node UID to annotate: not blank, at most 1 KiB, no control characters and no invisible Unicode format or bidi characters (zero-width joiner and non-joiner are allowed). |
+| `key`     | `string` | Yes      | Property name (e.g. `"team_owner"`, `"deprecated"`), at most 256 bytes, no control characters.                                                                           |
+| `value`   | `any`    | Yes      | Property value — any JSON value up to 64 KiB serialized and nested at most 64 levels deep. Overwrites existing.                                                          |
 
-`last_indexed_at` is reserved for NestWeaver and cannot be set or unset. The sidecar holds at most 100,000 annotated nodes, 256 properties per node, and 32 MiB in total. A write that has to wait behind an index waits up to `NESTWEAVER_METADATA_WRITE_WAIT_SECS` (default 15 seconds), then returns `write-busy` without applying anything; retry it. A cancelled request is never applied, and a committed write is never reported as failed.
+`last_indexed_at` is reserved for NestWeaver and cannot be set or unset. The sidecar is written as compact JSON (an older pretty-printed sidecar still loads) and holds at most 100,000 annotated nodes, 256 properties per node, and 32 MiB in total. A write that has to wait behind an index waits up to `NESTWEAVER_METADATA_WRITE_WAIT_SECS` (default 15 seconds), then returns `write-busy` without applying anything; retry it. A cancelled request is never applied, and a committed write is never reported as failed.
 
 ### query_extensions
 

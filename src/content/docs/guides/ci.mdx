@@ -37,7 +37,7 @@ Release archives are named `nestweaver-<tag>-<target>.tar.gz`, with a matching `
 ```yaml
 - name: Install NestWeaver
   run: |
-    tag="v12.2.1" # pin the release tag you selected
+    tag="v12.2.2" # pin the release tag you selected
     target="x86_64-unknown-linux-gnu"
     file="nestweaver-${tag}-${target}.tar.gz"
     curl -fsSL -o "$file" "https://github.com/Kehl-io/nestweaver/releases/download/${tag}/${file}"
@@ -49,7 +49,7 @@ Release archives are named `nestweaver-<tag>-<target>.tar.gz`, with a matching `
     echo "$install_dir" >> "$GITHUB_PATH"
 ```
 
-Use the tag of the release you intend to run. Keep the extracted directory intact: Linux archives ship a `lib/` directory with the C++ runtime beside the binary, so moving only `nestweaver` breaks it. A release that changes the resolver generation needs `nestweaver index --repo <path> --force` once per repo on a cached database; `nestweaver stale-check` exits 2 until you do. `cargo install nestweaver` is not a published crates.io package.
+Use the tag of the release you intend to run. Keep the extracted directory intact: Linux archives ship a `lib/` directory with the C++ runtime beside the binary, so moving only `nestweaver` breaks it. A release that changes the resolver generation needs `nestweaver index --repo <path> --force` once per repo on a cached database; `nestweaver stale-check` exits 2 until you do. Upgrading a cached database to 12.2.2 also needs `nestweaver brain refresh <vault>` once per vault (see [Upgrading to 12.2.2](/cli/indexing/#upgrading-to-1222)). `cargo install nestweaver` is not a published crates.io package.
 
 ## Index in CI
 
@@ -97,6 +97,18 @@ The selection covers one repository. With `--base-ref`, that is the indexed repo
 nestweaver affected-tests --base-ref "$base" --db ./nestweaver.lbug --json \
   | jq -r '.tier_1[].test_file, .tier_2[].test_file, .tier_3[].test_file'
 ```
+
+### Local pre-push check
+
+The same blast-radius analysis can run on a developer's machine before every push:
+
+```bash
+nestweaver hooks --install --db "$(pwd)/nestweaver.lbug"
+nestweaver hooks --install --strict   # block the push on a contract-verified breaking change
+nestweaver hooks --uninstall
+```
+
+`hooks --install` writes `.git/hooks/pre-push`, which runs `nestweaver pr-impact` against the merge-base. It is advisory unless installed with `--strict`. The database is written into the hook as an absolute path; run from a subdirectory, it binds the database at the repository root. It never writes through a symlink, and it mentions `core.hooksPath` only when that setting is actually configured. `hooks --uninstall` removes NestWeaver's hook and restores the backup it made of an earlier hook; when NestWeaver's hook is not installed, it leaves the hooks directory alone.
 
 ## Snapshots
 

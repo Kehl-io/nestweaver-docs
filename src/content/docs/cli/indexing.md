@@ -55,7 +55,23 @@ Indexing reports what it could not read instead of failing silently or failing t
 - **A malformed OpenAPI spec** is skipped and disclosed as degraded coverage rather than failing every index. Pathologically nested specs are refused quickly.
 - **Unsafe roots.** System pseudo-filesystems such as `/proc`, `/sys` and `/dev`, and other system roots, are refused as repo or vault roots.
 
-Indexing never runs programs from the repository it reads. Git is called with the repository's hooks, fsmonitor, credential helpers, filter, textconv and external-diff drivers, pager and askpass programs disabled, and Git metadata that points into another repository (a forged `commondir` or gitfile) is refused.
+Indexing never runs programs from the repository it reads. Git is called with the repository's hooks, fsmonitor, credential helpers, filter, textconv and external-diff drivers, pager and askpass programs disabled, and Git metadata that points into another repository (a forged `commondir` or gitfile) is refused. Working-tree `status` and `diff` calls also pass `--ignore-submodules=dirty`, so a submodule's own filter programs never run; a submodule whose recorded commit moved still shows as changed. Submodule contents are not indexed.
+
+Go files marked `//go:build ignore` (or the legacy `// +build ignore`) are left out of package resolution and build variants, as `go build` leaves them out.
+
+## Upgrading to 12.2.2
+
+12.2.2 changes how calls and imports resolve (resolver generation 12, parsed cache 8) and how vault links are derived. After upgrading, run both steps once:
+
+```bash
+# Once per repository: a full re-index, not an incremental one
+nestweaver index --repo ./my-project --db ./nestweaver.lbug --force
+
+# Once per vault: re-derive notes and links
+nestweaver brain refresh ./my-vault --db ./nestweaver.lbug
+```
+
+Until a repository is re-indexed, `stale-check` exits 2 for it, `dead-code` refuses, and `blast-radius` misses the new edges. The vault refresh is not automatic in this release, because the Markdown derivation version did not change; without it, `[[wikilink]]` values in frontmatter relationships and `[[Note#^id]]` block references keep their old, unresolved state.
 
 ## Upgrading: re-index with `--force`
 
@@ -66,7 +82,7 @@ nestweaver stale-check --db ./nestweaver.lbug
 nestweaver index --repo ./my-project --db ./nestweaver.lbug --force
 ```
 
-A plain `index` is not enough: a generation-stale repo is already at git HEAD, so the incremental path finds nothing to do. The release after 12.2.1 moves the resolver generation from 11 to 12 (improved Go, Python, Kotlin and Java import resolution, method calls on call and `new` receivers, and `new Foo()` call edges), so every repo needs one forced re-index after that upgrade.
+A plain `index` is not enough: a generation-stale repo is already at git HEAD, so the incremental path finds nothing to do. 12.2.2 moves the resolver generation from 11 to 12 (improved Go, Python, Kotlin and Java import resolution, method calls on call and `new` receivers, and `new Foo()` call edges), so every repo needs one forced re-index after that upgrade.
 
 An index that is killed part-way is recorded as incomplete: `stale-check` reports the repo as `incomplete`, and the next `index` rebuilds it in full.
 
@@ -80,7 +96,7 @@ nestweaver watch
 nestweaver watch ./my-project
 ```
 
-The watcher monitors for creates, modifies, and deletes of supported source files. Changes are debounced into 2-second windows, and each batch triggers an incremental re-index. This keeps the graph current as you code without manual re-runs. Press Ctrl-C to stop cleanly.
+The watcher monitors for creates, modifies, and deletes of supported source files. Changes are debounced into 2-second windows, and each batch triggers an incremental re-index. This keeps the graph current as you code without manual re-runs. A watcher batch resolves against the whole repository the same way a full index does, so re-exports and type-aware member calls into unchanged files keep their edges; a file the batch cannot re-parse keeps its existing edges. Press Ctrl-C to stop cleanly.
 
 The watcher runs inside the daemon. If a `watch` was killed without a clean shutdown, `nestweaver watch-stop` releases the watcher slot (it does not start a daemon), or `watch --force` replaces the old watcher. A watcher that cannot publish a batch is reported by `nestweaver brain status`.
 

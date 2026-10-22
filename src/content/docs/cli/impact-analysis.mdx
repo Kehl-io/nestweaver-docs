@@ -52,7 +52,7 @@ nestweaver impact "processPayment" --confidence 0.8
 
 `impact` traverses incoming CALLS, IMPORTS, EXTENDS, and IMPLEMENTS edges from the target symbol. Each affected symbol gets an `impact_score` that decays multiplicatively through edges — low-confidence paths are pruned automatically, and the pruning is disclosed (`--min-score 0` opts out). The default depth is 3 (range 1–15) and the default `--limit` is 50 (range 1–1000).
 
-Name a symbol by UID, by name, or qualified as `path::name`, `Class::method` or `path::Class::method`. `path::<module>` names a file's top-level code. A miss exits 2 with a `Did you mean:` line; an ambiguous name exits 3 and lists candidates with their file paths. A `--repo` that names no indexed repo exits 2, an ambiguous one exits 3, and a malformed one exits 64.
+Name a symbol by UID, by name, or qualified as `path::name`, `Class::method` or `path::Class::method`. `path::<module>` names a file's top-level code. A miss exits 2 with a `Did you mean:` line; an ambiguous name exits 3 and lists candidates with their file paths. A `--repo` that names no indexed repo exits 2 and an ambiguous one exits 3. An empty or malformed `--repo` is not handled the same way everywhere yet: `--repo ''` exits 64 on `hubs`, `dead-code`, `affected-tests` and `clusters` but is ignored by `impact`, `flow-trace` and `pr-impact`, which then match every repo, and a malformed selector such as `repo:::` names no repo and exits 2. A selector over 512 bytes exits 64. Pass a repo name, root path or UID from `nestweaver list-repos`.
 
 ## PR impact analysis
 

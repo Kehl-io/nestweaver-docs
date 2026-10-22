@@ -50,20 +50,20 @@ nestweaver brain status --db '/absolute/path/to/nestweaver.lbug' 2>/dev/null || 
 
 The database path is shell-quoted, so a path with spaces or shell metacharacters is passed through intact.
 
-**PreToolUse (Bash)** — When the agent runs `grep`, `rg`, `find`, `fd`, `ack` or `ag`, the hook reads the command from the event's `tool_input` and adds a note to the agent's context (`hookSpecificOutput.additionalContext`) suggesting `brain_search`, `regex_search` or `brain_context` instead. Non-blocking — the original command still runs. It works without `jq` by matching the raw event text.
+**PreToolUse (Bash)** — When the command the agent runs is itself `grep`, `rg`, `find`, `fd`, `ack` or `ag` (including after `sudo`, `xargs`, an environment assignment or a pipe), the hook adds a note to the agent's context (`hookSpecificOutput.additionalContext`) suggesting `brain_search`, `regex_search` or `brain_context` instead. A search word elsewhere in the command, such as `git commit -m "find the bug"`, does not trigger it. The hook reads the command from the event's `tool_input` with `jq`; without `jq` it does nothing. Non-blocking — the original command still runs.
 
-Setup in releases up to 12.2.1 wrote a Bash hook that read the wrong keys and never fired. Run `nestweaver setup claude-code` again to replace them.
+Setup in releases up to 12.2.1 wrote a Bash hook that read the wrong keys and never fired. Run `nestweaver setup claude-code` again to replace it. Setup recognises only the exact hook commands it writes, so a hook of your own that merely looks similar is left in place.
 
 ### Advanced hooks
 
 The NestWeaver repo includes additional hooks you can install manually from `integrations/claude-code/hooks/`. Copy the scripts to `.claude/hooks/nestweaver/` in your project and merge `integrations/claude-code/settings.json` into your `.claude/settings.json`; its commands run the scripts from `$CLAUDE_PROJECT_DIR/.claude/hooks/nestweaver/`. MCP servers belong in `.mcp.json`, not in `settings.json`.
 
-| Hook                         | Trigger                 | What it does                                                                                            |
-| ---------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------- |
-| `pre-read-enrich.sh`         | PreToolUse (Read)       | Searches the graph for symbols in the file being read, shows the top 5 with locations                   |
-| `post-edit-impact.sh`        | PreToolUse (Write/Edit) | Runs `nestweaver impact` on symbols about to be edited, shows top 3 affected dependents before the edit |
-| `pre-search-enrich.sh`       | PreToolUse (Bash)       | Runs `nestweaver search` alongside grep to show graph results                                           |
-| `post-commit-stale-check.sh` | PostToolUse (Bash)      | After `git commit`, compares HEAD against the indexed SHA and warns if the index is behind              |
+| Hook                         | Trigger                 | What it does                                                                                                                    |
+| ---------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `pre-read-enrich.sh`         | PreToolUse (Read)       | Searches the graph for symbols in the file being read, shows the top 5 with locations                                           |
+| `post-edit-impact.sh`        | PreToolUse (Write/Edit) | Runs `nestweaver impact` on symbols about to be edited, shows top 3 affected dependents before the edit                         |
+| `pre-search-enrich.sh`       | PreToolUse (Bash)       | Runs `nestweaver search` for the grep/rg pattern (not the path) and shows the graph results                                     |
+| `post-commit-stale-check.sh` | PostToolUse (Bash)      | After `git commit`, runs `nestweaver stale-check` and warns when the repo needs a re-index (`--force` for an outdated resolver) |
 
 All hooks read the Claude Code event from stdin (`tool_input.file_path` or `tool_input.command`), return their context as `hookSpecificOutput.additionalContext` on stdout, use `$NESTWEAVER_DB` (default `nestweaver.lbug` in the project directory), and exit silently if `jq` is missing or the database doesn't exist. They never block a tool call.
 

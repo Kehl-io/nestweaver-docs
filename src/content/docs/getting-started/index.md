@@ -75,6 +75,10 @@ nestweaver --version
 
 Run `nestweaver --help` to see the full command list. `--json` is per command, not a global flag.
 
+:::note[Upgrading an existing database to 12.2.2]
+12.2.2 needs a one-time `nestweaver index --repo <path> --force` for each repository and a `nestweaver brain refresh <vault>` for each vault. See [Upgrading to 12.2.2](/cli/indexing/#upgrading-to-1222).
+:::
+
 ## Next steps
 
 Head to the [Quick Start](/getting-started/quick-start/) to index your first codebase and configure your AI tools.

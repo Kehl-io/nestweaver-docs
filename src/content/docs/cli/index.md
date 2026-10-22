@@ -31,6 +31,7 @@ These flags work on every command.
 | 5    | Unavailable (`pull` only)                                                                                                                                                                                                                                                          |
 | 64   | Usage error: an unknown flag, an out-of-range or empty value, a missing argument, or a value a tool's schema rejects. Examples: `affected-tests --files` without `--repo` when several repos are indexed, `pre-push-impact --format <invalid>`, `list-features` without `--config` |
 | 69   | `daemon status` only: the daemon is running but unhealthy (unreachable, or its owner or endpoint cannot be verified)                                                                                                                                                               |
+| 75   | Incomplete: `count-patterns` ran out of its time budget, so the counts it printed are lower bounds. Raise `--max-millis`                                                                                                                                                           |
 
 With `--json`, a not-found exit 2 writes `{"error": "not found", ...}` to stdout on the read commands. An exit 64 raised by the argument parser happens before `--json` is read, so it writes only to stderr.
 
