@@ -23,7 +23,7 @@ Astro Starlight documentation site. Built-in Pagefind search, dark/light mode to
 
 ## File structure
 
-- `astro.config.mjs` — Starlight config: site URL, sidebar structure (6 sections), logo, custom CSS, component overrides
+- `astro.config.mjs` — Starlight config: site URL, sidebar structure (8 sections), logo, custom CSS, component overrides
 - `src/styles/custom.css` — Starlight CSS variable overrides for NestWeaver brand colors (dark: cobalt #5ed0fe accent, deep navy backgrounds; light: deep blue #0862a7 accent)
 - `src/content/docs/` — All documentation content as Markdown files
   - `getting-started/` — Installation, Quick Start, Your First Query
