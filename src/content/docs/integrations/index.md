@@ -13,26 +13,26 @@ NestWeaver integrates with any AI tool that supports the Model Context Protocol 
 nestweaver setup
 ```
 
-This auto-detects installed AI tools and writes the MCP server configuration for each one. It currently supports 16 tools:
+This auto-detects installed AI tools and writes the MCP server configuration for each one, with the database as an absolute path. It reports each file it wrote, and exits non-zero if any tool failed. It currently supports 16 tools:
 
-| Tool                                       | Config Path                           | Notes                                           |
-| ------------------------------------------ | ------------------------------------- | ----------------------------------------------- |
-| [Claude Code](/integrations/claude-code/)  | `.mcp.json` + `.claude/settings.json` | Deepest integration — includes enrichment hooks |
-| [HermesAgent](/integrations/hermes-agent/) | `.hermes/config.json`                 | Auto-discovers tools as `mcp_nestweaver_*`      |
-| Cursor                                     | `.cursor/mcp.json`                    | Use `--lite` for 6-tool mode                    |
-| Codex                                      | `.codex/config.toml`                  |                                                 |
-| Windsurf                                   | `~/.codeium/windsurf/mcp_config.json` | Global config                                   |
-| JetBrains                                  | `.junie/mcp/mcp.json`                 |                                                 |
-| VS Code                                    | `.vscode/mcp.json`                    |                                                 |
-| Gemini CLI                                 | `.gemini/settings.json`               |                                                 |
-| GitHub Copilot CLI                         | `.github/copilot-mcp.json`            |                                                 |
-| Aider                                      | `.aider.conf.yml`                     | YAML config at project root                     |
-| Kiro                                       | `.kiro/settings.json`                 |                                                 |
-| Continue.dev                               | `.continue/config.json`               |                                                 |
-| Cline                                      | `.cline/settings.json`                |                                                 |
-| OpenCode                                   | `.opencode/config.json`               |                                                 |
-| Trae                                       | `.trae/config.json`                   |                                                 |
-| Devin                                      | `devin.json`                          |                                                 |
+| Tool                                       | Config Path                            | Notes                                                   |
+| ------------------------------------------ | -------------------------------------- | ------------------------------------------------------- |
+| [Claude Code](/integrations/claude-code/)  | `.mcp.json` + `.claude/settings.json`  | Deepest integration — includes enrichment hooks         |
+| [HermesAgent](/integrations/hermes-agent/) | `.hermes/config.json`                  | Auto-discovers tools as `mcp_nestweaver_*`              |
+| Cursor                                     | `.cursor/mcp.json`                     | Setup writes the 6-tool lite mode                       |
+| Codex                                      | `.codex/config.toml`                   | Also writes `AGENTS.md`                                 |
+| Windsurf                                   | `~/.codeium/windsurf/mcp_config.json`  | Global config                                           |
+| JetBrains                                  | `.junie/mcp/mcp.json`                  |                                                         |
+| VS Code                                    | `.vscode/mcp.json`                     | Under the `servers` key                                 |
+| Gemini CLI                                 | `.gemini/settings.json`                |                                                         |
+| GitHub Copilot                             | `.vscode/mcp.json`                     | Under `servers`; also `.github/copilot-instructions.md` |
+| Aider                                      | —                                      | No MCP client; setup writes nothing                     |
+| Kiro                                       | `.kiro/settings/mcp.json`              |                                                         |
+| Continue.dev                               | `.continue/mcpServers/nestweaver.json` |                                                         |
+| Cline                                      | —                                      | Setup prints the entry to add in Cline's panel          |
+| OpenCode                                   | `opencode.json`                        | Under the `mcp` key                                     |
+| Trae                                       | `.trae/config.json`                    |                                                         |
+| Devin                                      | `devin.json`                           |                                                         |
 
 ### Tools not covered by setup
 
@@ -102,6 +102,6 @@ nestweaver generate-guide --format agents-md --db ./your.lbug
 nestweaver generate-guide --format skill --db ./your.lbug
 ```
 
-Available formats: `markdown` (default), `claude-md`, `cursor-rule`, `agents-md`, `skill`.
+Available formats: `markdown` (default), `claude-md`, `cursor-rule`, `agents-md`, `skill`. Without `--output` the guide is printed to stdout. `--output` creates the file with `<!-- nestweaver:begin -->` / `<!-- nestweaver:end -->` markers when it is missing, and afterwards replaces only the text between them; it refuses an existing file without exactly one pair of markers.
 
 These files give the agent a head start — architecture overview, key entry points, and conventions derived from the graph.

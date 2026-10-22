@@ -30,10 +30,10 @@ NestWeaver gives your agent precomputed answers instead of raw files. But even w
 
 NestWeaver offers two query interfaces. They return the same data, but their token costs differ significantly.
 
-| Interface        | When to use                              | Token overhead                                         |
-| ---------------- | ---------------------------------------- | ------------------------------------------------------ |
-| **MCP tools**    | Main conversation loop, interactive work | ~18K tokens for tool schemas (loaded once per session) |
-| **CLI via Bash** | Subagents, batch scripts, hooks          | Zero schema overhead — precomputed answers only        |
+| Interface        | When to use                              | Token overhead                                                                                  |
+| ---------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **MCP tools**    | Main conversation loop, interactive work | ~10K tokens for tool schemas (the catalogue is capped at 40,000 bytes; loaded once per session) |
+| **CLI via Bash** | Subagents, batch scripts, hooks          | Zero schema overhead — precomputed answers only                                                 |
 
 **Use CLI in subagents for ~40-60% fewer tokens per query.** The CLI returns the same data without loading tool schemas into context. Always pass `--json` for machine-readable output.
 

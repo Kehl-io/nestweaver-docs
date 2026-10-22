@@ -23,19 +23,19 @@ NestWeaver's analysis commands help you understand the consequences of changes b
 
 ## Command reference
 
-| Command          | Description                          | Key Flags                                     |
-| ---------------- | ------------------------------------ | --------------------------------------------- |
-| `impact`         | Trace blast radius of a symbol       | `--depth`, `--confidence`, `--repo`, `--json` |
-| `pr-impact`      | PR blast radius with risk scoring    | `--files`, `--depth`, `--json`                |
-| `affected-tests` | Select tests for changed files       | `--files`, `--base-ref`, `--json`             |
-| `dead-code`      | Detect unreachable symbols           | `--min-confidence`, `--json`                  |
-| `hubs`           | Find most-connected hub nodes        | `--top`, `--json`, `--config`                 |
-| `bridges`        | Find architectural chokepoints       | `--top`, `--json`, `--config`                 |
-| `contracts`      | Inspect API contract graph           | (subcommand)                                  |
-| `ranking`        | Inspect ranking priors               | `explain`, `rank` subcommands                 |
-| `eval`           | Offline retrieval-quality evaluation | `run`, `compare` subcommands                  |
-| `export`         | Export graph to external format      | `--format`, `--output`, `--top`               |
-| `clusters`       | Detect community clusters            | `--resolution`, `--json`                      |
+| Command          | Description                          | Key Flags                                                                                     |
+| ---------------- | ------------------------------------ | --------------------------------------------------------------------------------------------- |
+| `impact`         | Trace blast radius of a symbol       | `--depth`, `--confidence`, `--min-score`, `--limit`, `--repo`, `--json`                       |
+| `pr-impact`      | PR blast radius with risk scoring    | `--files`, `--base`, `--repo`, `--depth`, `--strict`, `--sarif`, `--json`                     |
+| `affected-tests` | Select tests for changed files       | `--files`, `--base-ref`, `--repo`, `--json`                                                   |
+| `dead-code`      | Review unreachable symbols           | `--min-confidence`, `--repo`, `--limit`, `--offset`, `--generation`, `--page-token`, `--json` |
+| `hubs`           | Find most-connected hub nodes        | `--top`, `--repo`, `--json`, `--config`                                                       |
+| `bridges`        | Find architectural chokepoints       | `--top`, `--repo`, `--json`, `--config`                                                       |
+| `contracts`      | Inspect API contract graph           | `list`, `drift`, `diff` subcommands                                                           |
+| `ranking`        | Inspect ranking priors               | `explain`, `rank` subcommands                                                                 |
+| `eval`           | Offline retrieval-quality evaluation | `run`, `compare` subcommands                                                                  |
+| `export`         | Export graph to external format      | `--format`, `--scope`, `--output`, `--top`                                                    |
+| `clusters`       | Detect community clusters            | `--resolution`, `--repo`, `--limit`, `--members`, `--json`                                    |
 
 ## Blast radius analysis
 
@@ -50,7 +50,9 @@ nestweaver impact "processPayment" --repo payments-api --json
 nestweaver impact "processPayment" --confidence 0.8
 ```
 
-`impact` traverses incoming CALLS, IMPORTS, EXTENDS, and IMPLEMENTS edges from the target symbol. Each affected symbol gets an `impact_score` that decays multiplicatively through edges — low-confidence paths are pruned automatically. The default depth is 3.
+`impact` traverses incoming CALLS, IMPORTS, EXTENDS, and IMPLEMENTS edges from the target symbol. Each affected symbol gets an `impact_score` that decays multiplicatively through edges — low-confidence paths are pruned automatically, and the pruning is disclosed (`--min-score 0` opts out). The default depth is 3 (range 1–15) and the default `--limit` is 50 (range 1–1000).
+
+Name a symbol by UID, by name, or qualified as `path::name`, `Class::method` or `path::Class::method`. `path::<module>` names a file's top-level code. A miss exits 2 with a `Did you mean:` line; an ambiguous name exits 3 and lists candidates with their file paths. A `--repo` that names no indexed repo exits 2, an ambiguous one exits 3, and a malformed one exits 64.
 
 ## PR impact analysis
 
@@ -58,14 +60,20 @@ nestweaver impact "processPayment" --confidence 0.8
 # Auto-detect changed files from git diff
 nestweaver pr-impact
 
-# Specify files explicitly
-nestweaver pr-impact --files src/auth.rs,src/db.rs
+# Specify files explicitly, in a named repo
+nestweaver pr-impact --files src/auth.rs,src/db.rs --repo payments-api
 
-# Deeper analysis
-nestweaver pr-impact --depth 5 --json
+# Diff against a base ref (a merge-base SHA gives the PR's own changes)
+nestweaver pr-impact --base "$(git merge-base origin/main HEAD)"
+
+# Gate CI on contract-verified breaking changes, or emit SARIF
+nestweaver pr-impact --base origin/main --strict
+nestweaver pr-impact --base origin/main --sarif > nestweaver.sarif
 ```
 
-`pr-impact` maps changed files to their symbols, runs transitive impact analysis, groups results by cluster, and assigns **Low**, **Medium**, **High**, or **Unknown**. `Unknown` means the change was not assessed. When no `--files` are given, it uses `git diff --name-only` against the working tree.
+`pr-impact` maps changed files to their symbols, runs transitive impact analysis, groups results by cluster, and assigns **Low**, **Medium**, **High**, or **Unknown**. `Unknown` means the change was not assessed. When neither `--files` nor `--base` is given, it uses `git diff --name-only` against the working tree.
+
+`pr-impact` reviews one repo: the indexed repo checked out at the working directory's git root, or the one `--repo <name or UID>` names. Repo-relative `--files` paths resolve in that repo only. `--strict` exits 2 on a contract-verified breaking change; what it blocks on is set by `[pr_impact]` in the instance config. A degraded or incomplete run never blocks.
 
 ## Test selection
 
@@ -73,23 +81,30 @@ nestweaver pr-impact --depth 5 --json
 # Select tests affected by specific file changes
 nestweaver affected-tests --files src/auth.rs,src/db.rs
 
+# Name the repo when the database holds more than one
+nestweaver affected-tests --files src/auth.rs --repo my-service
+
 # Diff against a base branch
 nestweaver affected-tests --base-ref main --json
 ```
+
+Pass `--files` or `--base-ref`, not both. The selection covers one repository. With `--base-ref`, that is the indexed repo checked out at the working directory's git root. With `--files`, it is the only indexed repo; when the database holds more than one, `--repo` is required and the command exits 64 without it. Repo-relative paths resolve in that repo only, and `--json` names the repo. `--base-ref` runs `git diff --name-only <ref>`, which compares the ref with your working tree: it includes uncommitted edits and is not the merge-base diff, so pass a merge-base SHA when that is what you want.
 
 `affected-tests` performs static, call-graph-based regression test selection. It maps changed files to symbols, reverse-traverses CALLS/IMPORTS to depth 3, and buckets dependent test files into priority tiers. This is a prioritized signal, not a provably safe subset — it misses reflection, DI, codegen, and data-driven tests.
 
 ## Dead code detection
 
 ```bash
-# Find potentially dead code
+# Review unreachable symbols
 nestweaver dead-code
 
-# Only high-confidence results
-nestweaver dead-code --min-confidence high --json
+# Only high-confidence candidates in one repo
+nestweaver dead-code --min-confidence high --repo my-service --json
 ```
 
-`dead-code` walks forward from every entry point following CALLS, IMPORTS, EXTENDS, IMPLEMENTS, and MEMBER_OF edges. Symbols not reached are reported as potentially dead, with confidence levels: `low`, `medium`, `high`. Entry points are determined from manifest files and visibility modifiers.
+`dead-code` walks forward from every entry point (and every file's top-level `<module>` code) following CALLS, IMPORTS, EXTENDS, IMPLEMENTS, and MEMBER_OF edges. Symbols the walk does not reach are **review candidates, not a deletion list**: a reference the parser does not capture looks the same as no reference. Every confidence tier (`low`, `medium`, `high`) is a candidate to check by hand. Entry points come from manifest files, language-specific rules and visibility modifiers.
+
+On a graph built by an older resolver generation, `dead-code` refuses and exits 2 with the `nestweaver index --repo <path> --force` commands to run, because a missing edge would move live code onto the list. `coverage: "degraded"` means the walk had no roots or could not read its inputs. `--limit` is 1–1000 (default 50); page with `--offset`, or with `--page-token` and `--generation` from the previous page.
 
 ## Graph topology
 
@@ -122,4 +137,12 @@ nestweaver export --format mermaid --top 30
 nestweaver export --format msgpack --output graph.msgpack
 ```
 
-Supported formats: Cypher (Neo4j), GraphML (Gephi/yEd), Mermaid, MessagePack.
+Supported formats: Cypher (Neo4j), GraphML (Gephi/yEd), Mermaid, MessagePack. `--scope` picks `all` (default), `code` or `vault`; cypher, mermaid and msgpack are code-only. An invalid `--format` or `--scope` value exits 64, while a valid but unsupported combination (such as `--format cypher --scope vault`) exits 1.
+
+## Contract diff
+
+```bash
+nestweaver contracts diff --base openapi-v1.yaml --head openapi-v2.yaml --fail-on-breaking
+```
+
+`contracts diff` compares two OpenAPI spec files at the endpoint, request/response field and type level, including request parameters and response statuses, and classifies each change as BREAKING or INFO. `--fail-on-breaking` exits non-zero on any BREAKING change, so a breaking parameter or status change now fails it too.

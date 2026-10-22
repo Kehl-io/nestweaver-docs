@@ -75,7 +75,7 @@ Accepted spellings are `find-definition` (`definition`, `find`), `understand-arc
 
 ## Interaction memory
 
-With `--track-interactions` enabled, NestWeaver learns from agent query patterns over time. Each time a symbol appears in a context query result, its interaction score increases. These scores are then blended into the PPR personalization vector at a conservative 5% weight.
+With `--track-interactions` enabled (or `[ranking] track_interactions = true` in the instance config), NestWeaver learns from which results agents actually use. Results a query only showed do not count; a result counts when the agent goes on to use it. The scores are applied as a small re-rank after the walk, not as part of it.
 
 ```bash
 # Record interaction telemetry on the MCP server
@@ -85,7 +85,7 @@ nestweaver mcp --track-interactions
 nestweaver interactions status
 ```
 
-The interaction memory uses an **exploration floor** to prevent feedback loops. Every seed's personalization weight is scaled by `(1 - 0.05)`, with only the remaining 5% redistributed according to interaction history. This means a newly-seeded, never-before-accessed node always retains 95% of its original personalization mass — it can never be driven to zero by historical popularity.
+The re-rank cannot pull in unrelated symbols. The walk itself is personalized by the seeds alone. Once it converges, each node it reached is scaled by `1 + w · s / max_s`, where `s` is the node's interaction score, `max_s` the highest score among the reached nodes, and `w` = 0.05, so a frequently used node gains at most 5%. A node the seed cannot reach stays at zero however often it was used. If sessions were recorded by an older release, run `nestweaver interactions clear` once to drop them.
 
 Privacy guarantees:
 

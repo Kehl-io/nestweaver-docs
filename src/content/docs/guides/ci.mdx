@@ -37,17 +37,19 @@ Release archives are named `nestweaver-<tag>-<target>.tar.gz`, with a matching `
 ```yaml
 - name: Install NestWeaver
   run: |
-    tag="v12.0.1"
+    tag="v12.2.1" # pin the release tag you selected
     target="x86_64-unknown-linux-gnu"
     file="nestweaver-${tag}-${target}.tar.gz"
     curl -fsSL -o "$file" "https://github.com/Kehl-io/nestweaver/releases/download/${tag}/${file}"
     curl -fsSL -o "${file}.sha256" "https://github.com/Kehl-io/nestweaver/releases/download/${tag}/${file}.sha256"
     shasum -a 256 -c "${file}.sha256"
-    tar xzf "$file"
-    sudo mv nestweaver /usr/local/bin/
+    install_dir="$RUNNER_TEMP/nestweaver-${tag}"
+    mkdir -p "$install_dir"
+    tar -xzf "$file" -C "$install_dir"
+    echo "$install_dir" >> "$GITHUB_PATH"
 ```
 
-Use the tag of the release you intend to run. `12.0.1` does not change the resolver generation, so a database indexed with `12.0.0` does not need `--force` for this patch. `cargo install nestweaver` is not a published crates.io package.
+Use the tag of the release you intend to run. Keep the extracted directory intact: Linux archives ship a `lib/` directory with the C++ runtime beside the binary, so moving only `nestweaver` breaks it. A release that changes the resolver generation needs `nestweaver index --repo <path> --force` once per repo on a cached database; `nestweaver stale-check` exits 2 until you do. `cargo install nestweaver` is not a published crates.io package.
 
 ## Index in CI
 
@@ -87,10 +89,12 @@ nestweaver pr-impact --base "$base" --db ./nestweaver.lbug
 
 ### Affected tests
 
-Pass the files that changed, or a git ref. The JSON object has `tier_1`, `tier_2`, and `tier_3`. Each entry's path is `test_file`. "No tests found" is not safe-to-skip: the selection misses reflection, codegen, and data-driven tests.
+Pass the files that changed (`--files`) or a git ref (`--base-ref`), not both; passing both is a usage error (exit 64). The JSON object has `tier_1`, `tier_2`, and `tier_3`. Each entry's path is `test_file`. "No tests found" is not safe-to-skip: the selection misses reflection, codegen, and data-driven tests.
+
+The selection covers one repository. With `--base-ref`, that is the indexed repo checked out at the working directory's git root. With `--files`, it is the only indexed repo, and `--repo <name or UID>` is required when the database holds more than one (exit 64 otherwise). Repo-relative paths resolve in that repo only, and `--json` names the repo it diffed. `--base-ref` diffs the ref against the working tree, not the merge-base; pass a merge-base SHA for the PR's own changes.
 
 ```bash
-nestweaver affected-tests --base-ref main --db ./nestweaver.lbug --json \
+nestweaver affected-tests --base-ref "$base" --db ./nestweaver.lbug --json \
   | jq -r '.tier_1[].test_file, .tier_2[].test_file, .tier_3[].test_file'
 ```
 

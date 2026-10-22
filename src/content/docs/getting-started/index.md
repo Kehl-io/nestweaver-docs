@@ -36,12 +36,19 @@ Download a pre-built binary for your platform from [GitHub Releases](https://git
 - **Linux** — x86_64 and aarch64
 - **macOS** — x86_64 and aarch64
 
-Extract and install:
+Download the archive `nestweaver-<tag>-<target>.tar.gz` and its matching `.sha256` file for the release tag you selected, verify it, then extract it into its own directory and link the binary onto your `PATH`:
 
 ```bash
-tar xzf nestweaver-*.tar.gz
-sudo mv nestweaver /usr/local/bin/
+ARCHIVE="nestweaver-<tag>-<target>.tar.gz"
+shasum -a 256 -c "$ARCHIVE.sha256"
+INSTALL_DIR="/opt/nestweaver-<tag>"
+sudo mkdir -p "$INSTALL_DIR"
+sudo tar -xzf "$ARCHIVE" -C "$INSTALL_DIR"
+sudo ln -sfn "$INSTALL_DIR/nestweaver" /usr/local/bin/nestweaver
+nestweaver --version
 ```
+
+Keep the extracted directory intact. Linux archives include a `lib/` directory with the C++ runtime the database engine needs, so copying only the `nestweaver` binary leaves that runtime behind. Linux archives need glibc 2.35 or newer (Ubuntu 22.04, Debian 12); check with `ldd --version` and build from source on older systems.
 
 ## macOS app
 
