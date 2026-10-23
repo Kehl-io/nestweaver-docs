@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.6.3](https://github.com/Kehl-io/nestweaver-docs/compare/v0.6.2...v0.6.3) (2026-10-22)
+
+
+### Bug Fixes
+
+* document NestWeaver 12.2.2 behaviour and upgrade steps ([c73aecc](https://github.com/Kehl-io/nestweaver-docs/commit/c73aeccdc8635e2724a0179a6a7481485f6b149f))
+* document NestWeaver 12.2.2 behaviour and upgrade steps ([55be082](https://github.com/Kehl-io/nestweaver-docs/commit/55be082f4f8f7301d63eb8f2d590fe7f5b83aeb2))
+* state the empty and malformed --repo exit codes as the binary reports them ([238b190](https://github.com/Kehl-io/nestweaver-docs/commit/238b1902314468e1dd0360bd085a09fde8f1ca84))
+* sync CLI, MCP and integration docs with current NestWeaver behaviour ([7ea3df0](https://github.com/Kehl-io/nestweaver-docs/commit/7ea3df0c8da2e77b7d927a2bed813280912ccde1))
+* sync docs with NestWeaver hardening release ([7985afc](https://github.com/Kehl-io/nestweaver-docs/commit/7985afc1d6b7089912e784b7c8e0df188b22bd6c))
+
 ## [0.6.2](https://github.com/Kehl-io/nestweaver-docs/compare/v0.6.1...v0.6.2) (2026-10-10)
 
 
