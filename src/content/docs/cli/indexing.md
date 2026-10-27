@@ -59,6 +59,30 @@ Indexing never runs programs from the repository it reads. Git is called with th
 
 Go files marked `//go:build ignore` (or the legacy `// +build ignore`) are left out of package resolution and build variants, as `go build` leaves them out.
 
+## Upgrading to 12.2.3
+
+12.2.3 includes the release-hardening fixes since 12.2.2. The resolver generation
+moves from 12 to **17**, and parsed cache from 8 to **11**. Existing graphs can
+retain missing Go call edges even when their sources are unchanged. Rebuild each
+repository once, then refresh each registered vault against the rebuilt graph:
+
+```bash
+nestweaver stale-check --db /path/to/nestweaver.lbug
+nestweaver index --repo /path/to/my-project --db /path/to/nestweaver.lbug --force
+nestweaver brain refresh /path/to/my-vault --db /path/to/nestweaver.lbug
+```
+
+Repeat the index for every repository and the refresh for every vault. Preserve
+your usual `--config` binding too. A plain `index` at HEAD can leave the old
+resolver generation unchanged. `stale-check` exits 2 for a mismatched generation;
+`dead-code` refuses instead of returning results from stale edges.
+
+This release repairs Go slice-range receiver ownership, factory-call receivers,
+package-member recreation and if/switch/case binding lifetimes. See the
+[12.2.3 release notes](/guides/release-12-2-3/) for the other fixes and upgrade checks.
+New databases need no resolver migration. An incompatible LadybugDB storage
+format requires the [publication rebuild procedure](https://github.com/Kehl-io/nestweaver/blob/main/docs/guide/publication-rebuild.md#storage-engine-upgrade-ladybugdb-021-rebuild-required), rather than only a forced index.
+
 ## Upgrading to 12.2.2
 
 12.2.2 changes how calls and imports resolve (resolver generation 12, parsed cache 8) and how vault links are derived. After upgrading, run both steps once:
@@ -82,7 +106,7 @@ nestweaver stale-check --db ./nestweaver.lbug
 nestweaver index --repo ./my-project --db ./nestweaver.lbug --force
 ```
 
-A plain `index` is not enough: a generation-stale repo is already at git HEAD, so the incremental path finds nothing to do. 12.2.2 moves the resolver generation from 11 to 12 (improved Go, Python, Kotlin and Java import resolution, method calls on call and `new` receivers, and `new Foo()` call edges), so every repo needs one forced re-index after that upgrade.
+A plain `index` is not enough: a generation-stale repo can already be at git HEAD, so the incremental path finds nothing to do. The current generation is 17 in 12.2.3; every repository recorded at any other generation needs one forced re-index. The 12.2.2 instructions above are preserved for users upgrading across that earlier vault-link change.
 
 An index that is killed part-way is recorded as incomplete: `stale-check` reports the repo as `incomplete`, and the next `index` rebuilds it in full.
 
