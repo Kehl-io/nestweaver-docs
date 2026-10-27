@@ -87,6 +87,17 @@ A few languages resolve imports through their own module system rather than file
 
 Across languages, a method call on a call or `new` receiver (`new K().m()`, `K.make().m()`, chained calls) resolves only when every step of the receiver chain has a known type: each call must declare a return type defined in the repository, or plainly return `Name(..)`, `new Name(..)` or `cls(..)`, and the method must belong to that type or a supertype of it. A call on a library return type (`Optional`, `List`, `Promise`, an array) gets no edge, and shapes the resolver cannot type safely (Kotlin and Scala expression-body factories, Ruby implicit returns, multi-line returns, a method returning `self`) are left unresolved rather than guessed. Separately, `new Foo()` creates a call edge to the constructor in Java, C#, PHP, C++, Scala, Groovy and Dart. Edges like these change with the resolver generation, so re-index with `nestweaver index --repo <path> --force` after upgrading to a release that bumps it; `nestweaver stale-check` tells you when.
 
+### Go resolution in 12.2.3
+
+Typed slice ranges, supported inferred slice declarations and named factory
+returns preserve the declaring package and type owner. Factory-call receiver
+chains and callers of recreated package members recover their call edges during
+incremental indexing. Initializer bindings end with their `if` or `switch`, and
+case/default bindings remain within their clauses, so a real local shadow does
+not suppress later package or outer-receiver calls. Unsupported receiver forms
+remain unresolved; parenthesized ordinary value composite literals are not yet
+inferred. Existing graphs need [one forced re-index](/cli/indexing/#upgrading-to-1223).
+
 ## Edge types
 
 NestWeaver tracks six edge types between symbols, each with a default weight used by Personalized PageRank:
