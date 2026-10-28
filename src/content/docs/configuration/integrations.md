@@ -5,7 +5,7 @@ sidebar:
   order: 3
 ---
 
-NestWeaver integrates with 16 AI coding tools through a single `nestweaver setup` command. It auto-detects which tools are installed in your project directory and writes the appropriate MCP server configuration for each one, so every tool gets access to your codebase graph immediately.
+`nestweaver setup` supports 16 AI-tool adapters. It detects supported clients and writes or prints their configuration where implemented. Some adapters need manual steps, and Aider uses the CLI rather than MCP; check the table below. Reconnect the client and [verify activation](/integrations/verification/) before relying on its graph access.
 
 ## Supported tools
 
@@ -163,8 +163,9 @@ Use `--all` to configure all 16 tools regardless of detection. `--force` overwri
 
 ## Verify after setup or an upgrade
 
-Use the same absolute `--db` and usual `--config` bindings for indexing, setup and
-queries. Reconnect the client and inspect tool discovery (43 full tools, six in
+Use the same absolute `--db` for indexing, setup and queries. Preserve the usual
+`--config` binding on commands that accept it; `setup` accepts `--db` but no
+`--config` option. Reconnect the client and inspect tool discovery (43 full tools, six in
 lite mode, or your explicit allowlist), then query `brain_status`, a known symbol
 with `brain_search` and its caller with `brain_impact`. A written config or a
 successful CLI command alone does not prove MCP activation. See the

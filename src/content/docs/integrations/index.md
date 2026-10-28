@@ -1,6 +1,6 @@
 ---
 title: Integrations Overview
-description: Connect NestWeaver to your AI tools. One-command setup for 16 agents including Claude Code, HermesAgent, Cursor, Devin, and more.
+description: Connect NestWeaver through 16 setup adapters, with manual client steps and MCP activation checks.
 sidebar:
   order: 1
 ---
@@ -13,7 +13,7 @@ NestWeaver integrates with any AI tool that supports the Model Context Protocol 
 nestweaver setup
 ```
 
-This auto-detects installed AI tools and writes the MCP server configuration for each one, with the database as an absolute path. It reports each file it wrote, and exits non-zero if any tool failed. It currently supports 16 tools:
+This auto-detects installed AI tools and writes the MCP server configuration for each one, with the database as an absolute path. It reports each file it wrote, and exits non-zero if any tool failed. It currently supports 16 adapters. A written file is not proof that the client loaded it; follow the manual steps where noted and [verify activation](/integrations/verification/):
 
 | Tool                                       | Config Path                            | Notes                                                                   |
 | ------------------------------------------ | -------------------------------------- | ----------------------------------------------------------------------- |
@@ -108,8 +108,9 @@ These files give the agent a head start — architecture overview, key entry poi
 
 ## Verify after setup or an upgrade
 
-Use the same absolute `--db` and usual `--config` bindings for indexing, setup and
-queries. Reconnect the client and inspect tool discovery (43 full tools, six in
+Use the same absolute `--db` for indexing, setup and queries. Preserve the usual
+`--config` binding on commands that accept it; `setup` accepts `--db` but no
+`--config` option. Reconnect the client and inspect tool discovery (43 full tools, six in
 lite mode, or your explicit allowlist), then query `brain_status`, a known symbol
 with `brain_search` and its caller with `brain_impact`. A written config or a
 successful CLI command alone does not prove MCP activation. See the
