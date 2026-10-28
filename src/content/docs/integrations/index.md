@@ -1,6 +1,6 @@
 ---
 title: Integrations Overview
-description: Connect NestWeaver to your AI tools. One-command setup for 16 agents including Claude Code, HermesAgent, Cursor, Devin, and more.
+description: Connect NestWeaver through 16 setup adapters, with manual client steps and MCP activation checks.
 sidebar:
   order: 1
 ---
@@ -13,7 +13,7 @@ NestWeaver integrates with any AI tool that supports the Model Context Protocol 
 nestweaver setup
 ```
 
-This auto-detects installed AI tools and writes the MCP server configuration for each one, with the database as an absolute path. It reports each file it wrote, and exits non-zero if any tool failed. It currently supports 16 tools:
+This auto-detects installed AI tools and writes the MCP server configuration for each one, with the database as an absolute path. It reports each file it wrote, and exits non-zero if any tool failed. It currently supports 16 adapters. A written file is not proof that the client loaded it; follow the manual steps where noted and [verify activation](/integrations/verification/):
 
 | Tool                                       | Config Path                            | Notes                                                                   |
 | ------------------------------------------ | -------------------------------------- | ----------------------------------------------------------------------- |
