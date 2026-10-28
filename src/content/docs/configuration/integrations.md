@@ -160,3 +160,17 @@ Setup auto-detects tools by checking for their config directories and binaries:
 | Hermes         | `.hermes/` directory or `hermes` binary in PATH                                                |
 
 Use `--all` to configure all 16 tools regardless of detection. `--force` overwrites customized skill and guide files and rebinds an entry that names a different `--db`; it never overwrites `.github/copilot-instructions.md` or an `AGENTS.md` without NestWeaver's generated-section markers. The tool name is positional: `nestweaver setup claude-code`.
+
+## Verify after setup or an upgrade
+
+Use the same absolute `--db` and usual `--config` bindings for indexing, setup and
+queries. Reconnect the client and inspect tool discovery (43 full tools, six in
+lite mode, or your explicit allowlist), then query `brain_status`, a known symbol
+with `brain_search` and its caller with `brain_impact`. A written config or a
+successful CLI command alone does not prove MCP activation. See the
+[verification walkthrough](/integrations/verification/) and
+[12.2.4 upgrade procedure](/guides/release-12-2-4/).
+
+The package's `mcpName` and `server.json` prepare official MCP Registry identity;
+installation does not create a registry listing. See the separate
+[registry checklist](/guides/mcp-registry/).

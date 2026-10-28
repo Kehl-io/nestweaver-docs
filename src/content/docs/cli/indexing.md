@@ -59,6 +59,24 @@ Indexing never runs programs from the repository it reads. Git is called with th
 
 Go files marked `//go:build ignore` (or the legacy `// +build ignore`) are left out of package resolution and build variants, as `go build` leaves them out.
 
+## Upgrading to 12.2.4
+
+12.2.4 uses resolver generation **19**, parsed cache **13** and Markdown derivation
+**3**. Compared with 12.2.3 (generation 17 / cache 11), Scala cached declarations
+and PHP namespace/alias resolution changed. Force-index every repository, then
+refresh each registered vault for encoded and absolute in-vault note links:
+
+```sh
+nestweaver index --repo /path/to/repo --db /path/to/nestweaver.lbug --force
+nestweaver brain refresh /path/to/vault --db /path/to/nestweaver.lbug
+nestweaver stale-check --db /path/to/nestweaver.lbug
+```
+
+Preserve the installation's `--config` binding as well. A plain incremental run
+may keep old edges. See [12.2.4 release and upgrade](/guides/release-12-2-4/) and
+[verify agent activation](/integrations/verification/). Earlier instructions below
+remain historical upgrade guidance.
+
 ## Upgrading to 12.2.3
 
 12.2.3 includes the release-hardening fixes since 12.2.2. The resolver generation
@@ -106,7 +124,7 @@ nestweaver stale-check --db ./nestweaver.lbug
 nestweaver index --repo ./my-project --db ./nestweaver.lbug --force
 ```
 
-A plain `index` is not enough: a generation-stale repo can already be at git HEAD, so the incremental path finds nothing to do. The current generation is 17 in 12.2.3; every repository recorded at any other generation needs one forced re-index. The 12.2.2 instructions above are preserved for users upgrading across that earlier vault-link change.
+A plain `index` is not enough: a generation-stale repo can already be at git HEAD, so the incremental path finds nothing to do. The current generation is 19 in 12.2.4; every repository recorded at any other generation needs one forced re-index. The 12.2.2 instructions above are preserved for users upgrading across that earlier vault-link change.
 
 An index that is killed part-way is recorded as incomplete: `stale-check` reports the repo as `incomplete`, and the next `index` rebuilds it in full.
 
