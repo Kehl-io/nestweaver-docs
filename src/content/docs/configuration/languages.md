@@ -128,3 +128,15 @@ nestweaver index --repo . --force
 ```
 
 Languages without a `_types.scm` file still get full symbol extraction and cross-file resolution. The types file adds the ability to resolve method calls through type bindings and class hierarchies.
+
+### PHP and Scala in 12.2.4
+
+PHP free-function calls resolve by namespace across repository directories,
+including `use function` aliases and namespace aliases; duplicate candidates are
+left unresolved. Declaration changes conservatively revisit PHP callers. A
+method call is not treated as a free function merely because names match.
+This does not add general factory-return type inference or dynamic-call support.
+Scala grammar-dependent cache invalidation recovers declarations such as local
+case classes and Scala 2 `export` identifiers. Resolver generation 19 / parsed
+cache 13 require a forced repository index after upgrading, including unchanged
+repositories; see [upgrade steps](/cli/indexing/#upgrading-to-1224).

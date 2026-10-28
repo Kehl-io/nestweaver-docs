@@ -122,3 +122,17 @@ Remove one custom property from one node.
 Reclaim embedding vectors left behind by deleted graph nodes. This does not re-embed the graph.
 
 `code_context` is the code-only PageRank walk. File paths are seeds there. `brain_context` takes note titles, tags, symbol names, and UIDs.
+
+## Verify after setup or an upgrade
+
+Use the same absolute `--db` and usual `--config` bindings for indexing, setup and
+queries. Reconnect the client and inspect tool discovery (43 full tools, six in
+lite mode, or your explicit allowlist), then query `brain_status`, a known symbol
+with `brain_search` and its caller with `brain_impact`. A written config or a
+successful CLI command alone does not prove MCP activation. See the
+[verification walkthrough](/integrations/verification/) and
+[12.2.4 upgrade procedure](/guides/release-12-2-4/).
+
+The package's `mcpName` and `server.json` prepare official MCP Registry identity;
+installation does not create a registry listing. See the separate
+[registry checklist](/guides/mcp-registry/).

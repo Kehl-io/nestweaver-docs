@@ -105,3 +105,17 @@ nestweaver generate-guide --format skill --db ./your.lbug
 Available formats: `markdown` (default), `claude-md`, `cursor-rule`, `agents-md`, `skill`. Without `--output` the guide is printed to stdout. `--output` creates the file with `<!-- nestweaver:begin -->` / `<!-- nestweaver:end -->` markers when it is missing, and afterwards replaces only the text between them; it refuses an existing file without exactly one pair of markers.
 
 These files give the agent a head start — architecture overview, key entry points, and conventions derived from the graph.
+
+## Verify after setup or an upgrade
+
+Use the same absolute `--db` and usual `--config` bindings for indexing, setup and
+queries. Reconnect the client and inspect tool discovery (43 full tools, six in
+lite mode, or your explicit allowlist), then query `brain_status`, a known symbol
+with `brain_search` and its caller with `brain_impact`. A written config or a
+successful CLI command alone does not prove MCP activation. See the
+[verification walkthrough](/integrations/verification/) and
+[12.2.4 upgrade procedure](/guides/release-12-2-4/).
+
+The package's `mcpName` and `server.json` prepare official MCP Registry identity;
+installation does not create a registry listing. See the separate
+[registry checklist](/guides/mcp-registry/).
