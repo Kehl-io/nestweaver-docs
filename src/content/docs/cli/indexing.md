@@ -59,6 +59,10 @@ Indexing never runs programs from the repository it reads. Git is called with th
 
 Go files marked `//go:build ignore` (or the legacy `// +build ignore`) are left out of package resolution and build variants, as `go build` leaves them out.
 
+## Upgrading to 12.2.5
+
+Before running the new version against an existing database, [stop the old daemon and back up with the previous binary](/guides/release-12-2-5/#upgrade-an-existing-database). The new engine can migrate storage format 47 to 49; downgrading after migration requires that backup. Force re-index each repository once for resolver generation **21** and parsed cache version **15**, keeping your normal database and config bindings.
+
 ## Upgrading to 12.2.4
 
 12.2.4 uses resolver generation **19**, parsed cache **13** and Markdown derivation
@@ -124,7 +128,7 @@ nestweaver stale-check --db ./nestweaver.lbug
 nestweaver index --repo ./my-project --db ./nestweaver.lbug --force
 ```
 
-A plain `index` is not enough: a generation-stale repo can already be at git HEAD, so the incremental path finds nothing to do. The current generation is 19 in 12.2.4; every repository recorded at any other generation needs one forced re-index. The 12.2.2 instructions above are preserved for users upgrading across that earlier vault-link change.
+A plain `index` is not enough: a generation-stale repo can already be at git HEAD, so the incremental path finds nothing to do. In 12.2.5 the generation is 21; every repository recorded at another generation needs one forced re-index. Use the release-specific notes above if you are also crossing an earlier vault-link change.
 
 An index that is killed part-way is recorded as incomplete: `stale-check` reports the repo as `incomplete`, and the next `index` rebuilds it in full.
 
