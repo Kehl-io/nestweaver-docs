@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.6](https://github.com/Kehl-io/nestweaver-docs/compare/v0.6.5...v0.6.6) (2026-11-06)
+
+
+### Bug Fixes
+
+* document the NestWeaver 12.2.5 storage upgrade ([#31](https://github.com/Kehl-io/nestweaver-docs/issues/31)) ([89c89c7](https://github.com/Kehl-io/nestweaver-docs/commit/89c89c7ff86057a0eceee2124f3544dea880b6c5))
+
 ## [0.6.5](https://github.com/Kehl-io/nestweaver-docs/compare/v0.6.4...v0.6.5) (2026-10-28)
 
 
