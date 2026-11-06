@@ -7,6 +7,10 @@ sidebar:
 
 Install the CLI, then [index a repository](/getting-started/quick-start/). If you want the picture first, read [what NestWeaver is](/getting-started/overview/) or the [Web UI tour](/web-ui/).
 
+:::caution[Upgrading an existing database to 12.2.5]
+Stop the old daemon and back up with the previous binary before installing the upgrade. The new database engine can migrate storage format 47 to 49. After upgrading, force re-index each repository once. See the [12.2.5 upgrade and rollback steps](/guides/release-12-2-5/).
+:::
+
 ## npm (recommended)
 
 The quickest way to get started. No Rust toolchain needed.
@@ -74,10 +78,6 @@ nestweaver --version
 ```
 
 Run `nestweaver --help` to see the full command list. `--json` is per command, not a global flag.
-
-:::note[Upgrading an existing database to 12.2.4]
-12.2.4 (resolver generation 19, parsed cache 13; Markdown derivation 3) needs a one-time `nestweaver index --repo <path> --force` for each repository and a `nestweaver brain refresh <vault>` for each vault. See [Upgrading to 12.2.4](/cli/indexing/#upgrading-to-1224).
-:::
 
 ## Next steps
 
