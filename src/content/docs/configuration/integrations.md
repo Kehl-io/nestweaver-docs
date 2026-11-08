@@ -170,7 +170,7 @@ lite mode, or your explicit allowlist), then query `brain_status`, a known symbo
 with `brain_search` and its caller with `brain_impact`. A written config or a
 successful CLI command alone does not prove MCP activation. See the
 [verification walkthrough](/integrations/verification/) and
-[12.2.5 upgrade procedure](/guides/release-12-2-5/).
+[12.2.6 upgrade procedure](/guides/release-12-2-6/).
 
 The package's `mcpName` and `server.json` prepare official MCP Registry identity;
 installation does not create a registry listing. See the separate
