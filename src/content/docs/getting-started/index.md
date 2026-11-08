@@ -7,8 +7,8 @@ sidebar:
 
 Install the CLI, then [index a repository](/getting-started/quick-start/). If you want the picture first, read [what NestWeaver is](/getting-started/overview/) or the [Web UI tour](/web-ui/).
 
-:::caution[Upgrading an existing database to 12.2.5]
-Stop the old daemon and back up with the previous binary before installing the upgrade. The new database engine can migrate storage format 47 to 49. After upgrading, force re-index each repository once. See the [12.2.5 upgrade and rollback steps](/guides/release-12-2-5/).
+:::caution[Upgrading an existing database to 12.2.6]
+Stop the old daemon and back up with the previous binary before installing the upgrade. Force re-index every repository for resolver generation 22 and refresh registered vaults if also crossing an earlier Markdown derivation upgrade. The database engine is unchanged from 12.2.5; older installations crossing the LadybugDB 0.22 storage boundary must also preserve their pre-upgrade backup for rollback. See the [12.2.6 upgrade and rollback steps](/guides/release-12-2-6/).
 :::
 
 ## npm (recommended)
