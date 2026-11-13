@@ -59,9 +59,9 @@ Indexing never runs programs from the repository it reads. Git is called with th
 
 Go files marked `//go:build ignore` (or the legacy `// +build ignore`) are left out of package resolution and build variants, as `go build` leaves them out.
 
-## Upgrading to 12.2.6
+## Upgrading to 12.2.7
 
-Stop the old daemon and [back up with the previous binary before installing](/guides/release-12-2-6/#upgrade-an-existing-database). Resolver generation is **22** and parsed cache version is **16**. Force re-index every repository once, then refresh registered vaults if also crossing an earlier Markdown derivation upgrade. Keep the same database and config bindings. A plain incremental index can leave old graph facts unchanged at Git HEAD.
+Stop the old daemon and [back up with the previous binary before installing](/guides/release-12-2-7/#upgrade-an-existing-database). Resolver generation is **23** and parsed cache version is **17**. Force re-index every repository once, then refresh registered vaults if also crossing an earlier Markdown derivation upgrade. Keep the same database and config bindings. A plain incremental index can leave old graph facts unchanged at Git HEAD.
 
 ```sh
 nestweaver index --repo /path/to/repo --db /path/to/nestweaver.lbug --config /path/to/instance.toml --force
@@ -69,7 +69,7 @@ nestweaver brain refresh /path/to/vault --db /path/to/nestweaver.lbug --config /
 nestweaver stale-check --db /path/to/nestweaver.lbug --config /path/to/instance.toml
 ```
 
-Markdown derivation remains **3**, unchanged from 12.2.5; an otherwise current vault does not need a full refresh solely for this resolver upgrade. LadybugDB **0.22.1** is unchanged from 12.2.5. If upgrading from an older engine, preserve the old-binary backup for the storage-format 47→49 rollback boundary. See the [12.2.6 release and upgrade guide](/guides/release-12-2-6/) for the distinction.
+Markdown derivation remains **3**, unchanged from 12.2.5; an otherwise current vault does not need a full refresh solely for this resolver upgrade. LadybugDB **0.22.3** retains storage format 49 from 12.2.6. If upgrading from an older engine, preserve the old-binary backup for the storage-format 47→49 rollback boundary. See the [12.2.7 release and upgrade guide](/guides/release-12-2-7/) for the distinction.
 
 ## Upgrading to 12.2.5
 
@@ -140,7 +140,7 @@ nestweaver stale-check --db ./nestweaver.lbug
 nestweaver index --repo ./my-project --db ./nestweaver.lbug --force
 ```
 
-A plain `index` is not enough: a generation-stale repo can already be at git HEAD, so the incremental path finds nothing to do. In 12.2.6 the generation is 22; every repository recorded at another generation needs one forced re-index. Use the release-specific notes above if you are also crossing an earlier vault-link change.
+A plain `index` is not enough: a generation-stale repo can already be at git HEAD, so the incremental path finds nothing to do. In 12.2.7 the generation is 23; every repository recorded at another generation needs one forced re-index. Use the release-specific notes above if you are also crossing an earlier vault-link change.
 
 An index that is killed part-way is recorded as incomplete: `stale-check` reports the repo as `incomplete`, and the next `index` rebuilds it in full.
 
