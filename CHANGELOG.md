@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/Kehl-io/nestweaver-docs/compare/v0.7.0...v0.8.0) (2026-11-13)
+
+
+### Features
+
+* document NestWeaver 12.2.7 release and upgrade ([#35](https://github.com/Kehl-io/nestweaver-docs/issues/35)) ([542eea4](https://github.com/Kehl-io/nestweaver-docs/commit/542eea4e7e7af2003a16c7cddf96dc60f9ef2baa))
+
 ## [0.7.0](https://github.com/Kehl-io/nestweaver-docs/compare/v0.6.6...v0.7.0) (2026-11-08)
 
 
