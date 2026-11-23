@@ -25,7 +25,7 @@ LadybugDB **0.22.3** remains on storage format **49**. Older installations cross
    nestweaver --version
    ```
 
-   For other installation methods, see [Installation](/getting-started/). Preserve the installation's normal service-manager setup; installing the CLI does not re-index its database.
+   For other installation methods, see [Installation](/getting-started/). If a service manager runs the daemon, use it to start the service with the new binary before continuing.
 
 4. Force re-index **every** repository once using its usual database and config bindings:
 
