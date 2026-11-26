@@ -5,13 +5,13 @@ sidebar:
   order: 2
 ---
 
-Install `nestweaver@12.2.8`, index the repositories you need, then configure the
+Install `nestweaver@12.2.9`, index the repositories you need, then configure the
 client with the same absolute database path. No model or API key is required for
 structural queries; embeddings are optional. If you already have a database,
-[back it up with the old binary before installing 12.2.8](/guides/release-12-2-8/).
+[back it up with the old binary before installing 12.2.9](/guides/release-12-2-9/).
 
 ```sh
-npm install --global nestweaver@12.2.8
+npm install --global nestweaver@12.2.9
 nestweaver index --repo /path/to/repo --db /absolute/path/to/nestweaver.lbug
 nestweaver setup --db /absolute/path/to/nestweaver.lbug
 nestweaver brain status --db /absolute/path/to/nestweaver.lbug --json
@@ -58,7 +58,7 @@ caller with `brain_impact`. Confirm its repository and path match the CLI graph.
 A CLI command succeeding alone does not establish client MCP activation.
 
 After upgrading a compatible graph, force-index each repo for generation 24.
-Follow the [release-specific upgrade steps](/guides/release-12-2-8/) for storage
+Follow the [release-specific upgrade steps](/guides/release-12-2-9/) for storage
 and any earlier vault-link changes. Check `stale-check` and coverage
 warnings before trusting results. Configured projects require
 `nestweaver materialize-projects --config <config> --db <db>` after topology

@@ -59,17 +59,15 @@ Indexing never runs programs from the repository it reads. Git is called with th
 
 Go files marked `//go:build ignore` (or the legacy `// +build ignore`) are left out of package resolution and build variants, as `go build` leaves them out.
 
-## Upgrading to 12.2.8
+## Upgrading to 12.2.9
 
-Stop the old daemon and [back up with the previous binary before installing](/guides/release-12-2-8/#upgrade-an-existing-database). Resolver generation is **24** and parsed cache version is **18**. Force re-index every repository once, then refresh any vault that still reports stale Markdown derivation. Keep the same database and config bindings. A plain incremental index can leave old graph facts unchanged at Git HEAD.
+[Back up with the previous binary before installing](/guides/release-12-2-9/#upgrade-an-existing-database). Resolver generation remains **24** and parsed-cache version remains **18**. Keep the same database and config bindings.
 
 ```sh
-nestweaver index --repo /path/to/repo --db /path/to/nestweaver.lbug --config /path/to/instance.toml --force
-nestweaver brain refresh /path/to/vault --db /path/to/nestweaver.lbug --config /path/to/instance.toml
 nestweaver stale-check --db /path/to/nestweaver.lbug --config /path/to/instance.toml
 ```
 
-Markdown derivation **4** updates eligible vaults on daemon startup. LadybugDB **0.22.3** retains storage format 49. If upgrading from an older engine, preserve the old-binary backup for the storage-format 47→49 rollback boundary. See the [12.2.8 release and upgrade guide](/guides/release-12-2-8/) for the distinction.
+Force-index each repository reported as `outdated_resolver`. Refresh a vault if it still reports stale derivation after daemon startup. See the [12.2.9 release and upgrade guide](/guides/release-12-2-9/) for storage and rollback details.
 
 ## Upgrading to 12.2.5
 
@@ -140,7 +138,7 @@ nestweaver stale-check --db ./nestweaver.lbug
 nestweaver index --repo ./my-project --db ./nestweaver.lbug --force
 ```
 
-A plain `index` is not enough: a generation-stale repo can already be at git HEAD, so the incremental path finds nothing to do. In 12.2.8 the generation is 23; every repository recorded at another generation needs one forced re-index. Use the release-specific notes above for vault refresh instructions.
+A plain `index` is not enough: a generation-stale repo can already be at git HEAD, so the incremental path finds nothing to do. In 12.2.9 the generation is 24; every repository recorded at another generation needs one forced re-index. Use the release-specific notes above for vault refresh instructions.
 
 An index that is killed part-way is recorded as incomplete: `stale-check` reports the repo as `incomplete`, and the next `index` rebuilds it in full.
 
